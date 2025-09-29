@@ -5,94 +5,149 @@ import { useNavigate } from "react-router-dom";
 const products = [
     {
         id: 1,
-        title: "iPhone 12 Pro Max 128GB",
-        price: 13500000,
+        title: "iPhone 12 Pro Max",
+        price: 18000000,
         category: "Điện thoại",
-        condition: "Like New",
-        location: "Hà Nội",
-        image: "https://picsum.photos/200/200?random=1",
+        condition: "Đã qua sử dụng",
+        location: "Hồ Chí Minh",
+        image: "/iphone.png"
+
     },
     {
         id: 2,
-        title: "Laptop Dell XPS 13 9360",
-        price: 9500000,
+        title: "Laptop Dell XPS 13",
+        price: 25000000,
         category: "Laptop",
-        condition: "Used",
-        location: "TP. Hồ Chí Minh",
-        image: "https://picsum.photos/200/200?random=2",
+        condition: "Mới",
+        location: "Hà Nội",
+        image: "/lapto.png"
     },
     {
         id: 3,
-        title: "Xe máy Honda Vision 2020",
-        price: 23000000,
-        category: "Phương tiện",
-        condition: "Used",
+        title: "Xe máy Honda SH 150i",
+        price: 95000000,
+        category: "Xe cộ",
+        condition: "Đã qua sử dụng",
         location: "Đà Nẵng",
-        image: "https://picsum.photos/200/200?random=3",
+        image: "/sh.png"
     },
     {
         id: 4,
-        title: "Tủ lạnh Samsung 250L",
-        price: 3500000,
+        title: "Tủ lạnh Samsung Inverter 360L",
+        price: 8500000,
         category: "Đồ gia dụng",
-        condition: "Used",
-        location: "Hải Phòng",
-        image: "https://picsum.photos/200/200?random=4",
+        condition: "Mới",
+        location: "Cần Thơ",
+        image: "/tulanh.png"
     },
     {
         id: 5,
-        title: "Máy ảnh Canon EOS 700D",
-        price: 4800000,
-        category: "Máy ảnh",
-        condition: "Like New",
-        location: "Cần Thơ",
-        image: "https://picsum.photos/200/200?random=5",
+        title: "Áo khoác Uniqlo nam",
+        price: 450000,
+        category: "Thời trang",
+        condition: "Mới",
+        location: "Huế",
+        image: "/ao.png"
     },
     {
         id: 6,
-        title: "Bàn học gỗ sồi",
-        price: 1200000,
+        title: "Ghế gaming Razer",
+        price: 3200000,
         category: "Nội thất",
-        condition: "Used",
-        location: "Huế",
-        image: "https://picsum.photos/200/200?random=6",
+        condition: "Đã qua sử dụng",
+        location: "Hải Phòng",
+        image: "ghe.png"
     },
     {
         id: 7,
-        title: "Ghế công thái học",
-        price: 1500000,
-        category: "Nội thất",
-        condition: "Like New",
+        title: "Máy ảnh Canon EOS M50",
+        price: 10500000,
+        category: "Máy ảnh",
+        condition: "Đã qua sử dụng",
         location: "Nha Trang",
-        image: "https://picsum.photos/200/200?random=7",
+        image: "/mayanh.png"
     },
     {
         id: 8,
-        title: "AirPods Pro 2",
-        price: 4200000,
-        category: "Phụ kiện",
-        condition: "Like New",
-        location: "Biên Hòa",
-        image: "https://picsum.photos/200/200?random=8",
+        title: "Loa Bluetooth JBL Charge 4",
+        price: 2100000,
+        category: "Âm thanh",
+        condition: "Mới",
+        location: "Hồ Chí Minh",
+        image: "/loa.png"
     },
     {
         id: 9,
-        title: "Đồng hồ Casio G-Shock",
-        price: 1700000,
-        category: "Thời trang",
-        condition: "Used",
-        location: "Bình Dương",
-        image: "https://picsum.photos/200/200?random=9",
+        title: "Bàn học gỗ thông",
+        price: 1500000,
+        category: "Nội thất",
+        condition: "Mới",
+        location: "Đồng Nai",
+        image: "/banhoc.png"
     },
     {
         id: 10,
-        title: "Xe đạp thể thao Giant",
-        price: 5500000,
-        category: "Thể thao",
-        condition: "Used",
+        title: "Đồng hồ Casio G-Shock",
+        price: 2200000,
+        category: "Phụ kiện",
+        condition: "Đã qua sử dụng",
         location: "Hà Nội",
-        image: "https://picsum.photos/200/200?random=10",
+        image: "donghong.png"
     },
+    {
+        id: 11,
+        title: "Tai nghe Sony WH-1000XM4",
+        price: 5900000,
+        category: "Âm thanh",
+        condition: "Mới",
+        location: "Hồ Chí Minh",
+        image: "/tainghe.png"
+    },
+    {
+        id: 12,
+        title: "Máy giặt LG Inverter 9Kg",
+        price: 6700000,
+        category: "Đồ gia dụng",
+        condition: "Mới",
+        location: "Đà Nẵng",
+        image: "/maygiat.png"
+    },
+    {
+        id: 13,
+        title: "Giày Nike Air Force 1",
+        price: 2100000,
+        category: "Thời trang",
+        condition: "Mới",
+        location: "Hà Nội",
+        image: "/giay.png"
+    },
+    {
+        id: 14,
+        title: "Máy tính bảng iPad Air 4",
+        price: 14500000,
+        category: "Tablet",
+        condition: "Đã qua sử dụng",
+        location: "Cần Thơ",
+        image: "/ipad.png"
+    },
+    {
+        id: 15,
+        title: "Smart TV LG OLED 55 inch",
+        price: 18500000,
+        category: "Điện tử",
+        condition: "Mới",
+        location: "Huế",
+        image: "/tv.png"
+    },
+    {
+        id: 16,
+        title: "Bếp điện từ Philips",
+        price: 1300000,
+        category: "Đồ gia dụng",
+        condition: "Mới",
+        location: "Đồng Nai",
+        image: "/beptu.png"
+    }
 ];
 
 function Home() {
@@ -125,9 +180,9 @@ function Home() {
     const navigate = useNavigate();
 
     return (
-        <div>
+        <div className="h-full w-full bg-amber-100">
             {/* Navbar */}
-            <div className="navbar bg-base-100 shadow-sm gap-2 justify-center mx-auto">
+            <div className="navbar top-0 fixed w-full z-50  bg-base-100 shadow-sm gap-2 justify-center mx-auto">
                 <div className="flex-none">
                     <button className="btn btn-square btn-ghost">
                         <svg
@@ -238,7 +293,7 @@ function Home() {
             </div>
 
             {/* Tabs */}
-            <div className="container mx-auto mt-5 font-medium">
+            <div className="container mx-auto  pt-20 font-medium ">
                 <div className="tabs tabs-bordered">
                     <a
                         className={`tab ${activeTab === "forYou" ? "tab-active" : ""}`}
@@ -261,13 +316,13 @@ function Home() {
                 </div>
 
                 {/* Nội dung Tab */}
-                <div className="mt-4">
+                <div className="mt-4 bg-white p-6 rounded-2xl">
                     {activeTab === "forYou" && (
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                             {products.map((item) => (
                                 <div key={item.id} className="card bg-base-100 shadow-md">
                                     <figure>
-                                        <img src={item.image} alt={item.title} />
+                                        <img className="h-50 mt-4" src={item.image} alt={item.title} />
                                     </figure>
                                     <div className="card-body">
                                         <h2 className="card-title text-lg font-bold">
@@ -288,9 +343,114 @@ function Home() {
 
                     {activeTab === "latest" && <p>Danh sách sản phẩm mới nhất 🚀</p>}
                     {activeTab === "video" && <p>Danh sách video 🎥</p>}
+                    <div className="flex justify-center items-center mt-6 rounded-full">
+                        <button className="btn w-60 h-12 !rounded-full text-lg font-medium">
+                            Xem thêm
+                        </button>
+
+                    </div>
                 </div>
+
+                <div className="bg-white mt-4 p-6 rounded-2xl">
+                    <h1 className="text-gray-600 text-lg">Các khóa phổ biến</h1>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-gray-500 mt-2   ">
+                        {/* Cột 1 */}
+                        <ul className="space-y-2 list-disc list-inside">
+                            <li>iPhone 12</li>
+                            <li>iPhone 14 Pro Max</li>
+                            <li>Điện Thoại iPhone Cũ</li>
+                            <li>Điện thoại Samsung Cũ</li>
+                            <li>Máy quay cũ</li>
+                            <li>Loa Cũ</li>
+                            <li>Điện Thoại Cũ</li>
+                        </ul>
+
+                        {/* Cột 2 */}
+                        <ul className="space-y-2 list-disc list-inside">
+                            <li>iPhone 12 Mini</li>
+                            <li>iPhone 14 Plus</li>
+                            <li>Dàn karaoke cũ</li>
+                            <li>Máy tính để bàn giá rẻ</li>
+                            <li>Micro cũ</li>
+                            <li>Máy tính để bàn cũ</li>
+                            <li>Macbook</li>
+                        </ul>
+
+                        {/* Cột 3 */}
+                        <ul className="space-y-2 list-disc list-inside">
+                            <li>iPhone 12 Pro</li>
+                            <li>iPhone 14 Pro</li>
+                            <li>Tivi cũ giá rẻ</li>
+                            <li>Ống kính (lens) cũ</li>
+                            <li>Tai Nghe Cũ</li>
+                            <li>Máy Tính Bảng Cũ</li>
+                        </ul>
+
+                        {/* Cột 4 */}
+                        <ul className="space-y-2 list-disc list-inside">
+                            <li>iPhone 12 Pro Max</li>
+                            <li>Samsung S25 Edge</li>
+                            <li>iPhone 16e</li>
+                            <li>Máy ảnh cũ</li>
+                            <li>Amply</li>
+                            <li>Laptop Cũ</li>
+                        </ul>
+                    </div>
+                </div>
+                {/* Chân trang */}
+
+
             </div>
-        </div>
+            <div className="">
+                <footer className="footer    sm:footer-horizontal bg-base-200 text-base-content p-6 mt-4">
+                    <aside>
+                        <svg
+                            width="50"
+                            height="50"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            className="fill-current">
+                            <path
+                                d="M22.672 15.226l-2.432.811.841 2.515c.33 1.019-.209 2.127-1.23 2.456-1.15.325-2.148-.321-2.463-1.226l-.84-2.518-5.013 1.677.84 2.517c.391 1.203-.434 2.542-1.831 2.542-.88 0-1.601-.564-1.86-1.314l-.842-2.516-2.431.809c-1.135.328-2.145-.317-2.463-1.229-.329-1.018.211-2.127 1.231-2.456l2.432-.809-1.621-4.823-2.432.808c-1.355.384-2.558-.59-2.558-1.839 0-.817.509-1.582 1.327-1.846l2.433-.809-.842-2.515c-.33-1.02.211-2.129 1.232-2.458 1.02-.329 2.13.209 2.461 1.229l.842 2.515 5.011-1.677-.839-2.517c-.403-1.238.484-2.553 1.843-2.553.819 0 1.585.509 1.85 1.326l.841 2.517 2.431-.81c1.02-.33 2.131.211 2.461 1.229.332 1.018-.21 2.126-1.23 2.456l-2.433.809 1.622 4.823 2.433-.809c1.242-.401 2.557.484 2.557 1.838 0 .819-.51 1.583-1.328 1.847m-8.992-6.428l-5.01 1.675 1.619 4.828 5.011-1.674-1.62-4.829z"></path>
+                        </svg>
+                        <p>
+                            ACME Industries Ltd.
+                            <br />
+                            Providing reliable tech since 1992
+                        </p>
+                    </aside>
+                    <nav>
+                        <h6 className="footer-title">Services</h6>
+                        <a className="link link-hover">Branding</a>
+                        <a className="link link-hover">Design</a>
+                        <a className="link link-hover">Marketing</a>
+                        <a className="link link-hover">Advertisement</a>
+                    </nav>
+                    <nav>
+                        <h6 className="footer-title">Company</h6>
+                        <a className="link link-hover">About us</a>
+                        <a className="link link-hover">Contact</a>
+                        <a className="link link-hover">Jobs</a>
+                        <a className="link link-hover">Press kit</a>
+                    </nav>
+                    <nav>
+                        <h6 className="footer-title">Legal</h6>
+                        <a className="link link-hover">Terms of use</a>
+                        <a className="link link-hover">Privacy policy</a>
+                        <a className="link link-hover">Cookie policy</a>
+                    </nav>
+                </footer>
+            </div>
+
+
+
+
+
+
+
+        </div >
     );
 }
 

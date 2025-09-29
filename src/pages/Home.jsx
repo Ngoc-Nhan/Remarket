@@ -316,15 +316,15 @@ function Home() {
                 </div>
 
                 {/* Nội dung Tab */}
-                <div className="mt-4 bg-white p-6 rounded-2xl">
+                <div className="mt-4 bg-white p-6 rounded-2xl ">
                     {activeTab === "forYou" && (
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                             {products.map((item) => (
-                                <div key={item.id} className="card bg-base-100 shadow-md">
+                                <div key={item.id} className="card bg-base-100 shadow-md  hover:bg-gray-200">
                                     <figure>
-                                        <img className="h-50 mt-4" src={item.image} alt={item.title} />
+                                        <img className="h-50 mt-4 " src={item.image} alt={item.title} />
                                     </figure>
-                                    <div className="card-body">
+                                    <div className="card-body ">
                                         <h2 className="card-title text-lg font-bold">
                                             {item.title}
                                         </h2>

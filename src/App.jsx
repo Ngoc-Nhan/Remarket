@@ -8,7 +8,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/dang-tin" element={<Login />} />
+      <Route path="/login" element={<Login />} />
     </Routes>
   );
 }

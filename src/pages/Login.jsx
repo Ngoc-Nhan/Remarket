@@ -1,71 +1,71 @@
-import React, { useState } from "react";
+// src/pages/Login.jsx
+import React from "react";
+import TypeIt from "typeit-react";
+import bgImage from "../assets/login_sale.jpg"; // ảnh nền
 
 function Login() {
-  const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // Giả lập login (bạn có thể thay bằng API call)
-    if (phone === "0901234567" && password === "123456") {
-      alert("Đăng nhập thành công!");
-      // Ví dụ: chuyển hướng sang trang home
-      window.location.href = "/home";
-    } else {
-      alert("Sai số điện thoại hoặc mật khẩu!");
-    }
-  };
-
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <div className="w-[400px] bg-white shadow-lg rounded-xl p-6">
-        <h2 className="text-2xl font-bold text-center mb-6">Đăng nhập</h2>
+    <div
+      className="min-h-screen flex items-center justify-end bg-cover bg-center relative"
+      style={{ backgroundImage: `url(${bgImage})` }}
+    >
+      {/* Overlay làm tối nền */}
+      <div className="absolute inset-0 bg-black/40"></div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+      {/* Login box bên phải */}
+      <div className="relative z-10 w-[400px] mr-10 bg-gradient-to-r from-orange-300 to-yellow-400 p-8 rounded-2xl shadow-2xl">
+        {/* Chữ có animation */}
+        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+          <TypeIt
+            options={{
+              strings: ["LOGIN TO YOUR ACCOUNT"],
+              speed: 70,
+              waitUntilVisible: true,
+            }}
+          />
+        </h2>
+
+        <form className="flex flex-col gap-4">
           <div>
-            <label className="block mb-1 text-sm font-medium">
-              Số điện thoại
+            <label className="block text-gray-800 mb-1 font-medium">
+              Username :
             </label>
             <input
               type="text"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              required
-              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-yellow-400"
+              className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-orange-400 outline-none"
             />
           </div>
-
           <div>
-            <label className="block mb-1 text-sm font-medium">Mật khẩu</label>
+            <label className="block text-gray-800 mb-1 font-medium">
+              Email Address :
+            </label>
+            <input
+              type="email"
+              className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-orange-400 outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-gray-800 mb-1 font-medium">
+              Password :
+            </label>
             <input
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-yellow-400"
+              className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-orange-400 outline-none"
             />
           </div>
-
           <button
             type="submit"
-            className="w-full bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-2 rounded-lg"
+            className="mt-4 w-full bg-blue-800 text-white font-semibold py-2 rounded-full hover:bg-blue-900 transition"
           >
-            Đăng nhập
+            LOGIN
           </button>
         </form>
-
-        <div className="mt-6 text-center space-x-3">
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-lg">
-            Facebook
-          </button>
-          <button className="px-4 py-2 bg-red-500 text-white rounded-lg">
-            Google
-          </button>
-          <button className="px-4 py-2 bg-black text-white rounded-lg">
-            Apple
-          </button>
-        </div>
+        <p className="text-center text-sm text-gray-800 mt-4">
+          Don’t have an account?{" "}
+          <a href="#" className="text-blue-800 font-medium hover:underline">
+            Sign Up now
+          </a>
+        </p>
       </div>
     </div>
   );

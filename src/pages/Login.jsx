@@ -57,7 +57,7 @@ function Login() {
             type="submit"
             className="mt-4 w-full bg-blue-800 text-white font-semibold py-2 rounded-full hover:bg-blue-900 transition"
           >
-            LOGIN on
+            LOGIN
           </button>
         </form>
         <p className="text-center text-sm text-gray-800 mt-4">

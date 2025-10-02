@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import { ChevronDown, MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Laptop } from 'lucide-react';
+import { Shirt } from 'lucide-react';
+import { Armchair } from 'lucide-react'
+import { NotebookTabs } from 'lucide-react';
+import { BoomBox } from 'lucide-react';
+import { CarFront } from 'lucide-react';
+import DanhMuc from "./DanhMuc";
 // Mock data sản phẩm
 const products = [
     {
@@ -10,7 +17,8 @@ const products = [
         category: "Điện thoại",
         condition: "Đã qua sử dụng",
         location: "Hồ Chí Minh",
-        image: "/iphone.png"
+        image: "/iphone.png",
+        postedAt: "2023-10-01T10:00:00Z"
 
     },
     {
@@ -20,7 +28,8 @@ const products = [
         category: "Laptop",
         condition: "Mới",
         location: "Hà Nội",
-        image: "/lapto.png"
+        image: "/lapto.png",
+        postedAt: "2025-09-30T14:30:30"
     },
     {
         id: 3,
@@ -29,7 +38,8 @@ const products = [
         category: "Xe cộ",
         condition: "Đã qua sử dụng",
         location: "Đà Nẵng",
-        image: "/sh.png"
+        image: "/sh.png",
+        postedAt: "2025-10-1T10:3:30"
     },
     {
         id: 4,
@@ -38,7 +48,8 @@ const products = [
         category: "Đồ gia dụng",
         condition: "Mới",
         location: "Cần Thơ",
-        image: "/tulanh.png"
+        image: "/tulanh.png",
+        postedAt: "2025-09-27T09:45:20"
     },
     {
         id: 5,
@@ -47,7 +58,8 @@ const products = [
         category: "Thời trang",
         condition: "Mới",
         location: "Huế",
-        image: "/ao.png"
+        image: "/ao.png",
+        postedAt: "2025-09-29T16:20:10"
     },
     {
         id: 6,
@@ -56,7 +68,8 @@ const products = [
         category: "Nội thất",
         condition: "Đã qua sử dụng",
         location: "Hải Phòng",
-        image: "ghe.png"
+        image: "ghe.png",
+        postedAt: "2025-09-30T11:05:45"
     },
     {
         id: 7,
@@ -65,7 +78,8 @@ const products = [
         category: "Máy ảnh",
         condition: "Đã qua sử dụng",
         location: "Nha Trang",
-        image: "/mayanh.png"
+        image: "/mayanh.png",
+        postedAt: "2025-09-28T19:40:30"
     },
     {
         id: 8,
@@ -74,7 +88,8 @@ const products = [
         category: "Âm thanh",
         condition: "Mới",
         location: "Hồ Chí Minh",
-        image: "/loa.png"
+        image: "/loa.png",
+        postedAt: "2025-09-29T08:15:05"
     },
     {
         id: 9,
@@ -83,7 +98,8 @@ const products = [
         category: "Nội thất",
         condition: "Mới",
         location: "Đồng Nai",
-        image: "/banhoc.png"
+        image: "/banhoc.png",
+        postedAt: "2025-09-26T13:25:50"
     },
     {
         id: 10,
@@ -92,7 +108,8 @@ const products = [
         category: "Phụ kiện",
         condition: "Đã qua sử dụng",
         location: "Hà Nội",
-        image: "donghong.png"
+        image: "donghong.png",
+        postedAt: "2025-09-30T21:55:15"
     },
     {
         id: 11,
@@ -101,7 +118,8 @@ const products = [
         category: "Âm thanh",
         condition: "Mới",
         location: "Hồ Chí Minh",
-        image: "/tainghe.png"
+        image: "/tainghe.png",
+        postedAt: "2025-09-27T10:30:40"
     },
     {
         id: 12,
@@ -110,7 +128,8 @@ const products = [
         category: "Đồ gia dụng",
         condition: "Mới",
         location: "Đà Nẵng",
-        image: "/maygiat.png"
+        image: "/maygiat.png",
+        postedAt: "2025-09-29T15:05:25"
     },
     {
         id: 13,
@@ -119,7 +138,8 @@ const products = [
         category: "Thời trang",
         condition: "Mới",
         location: "Hà Nội",
-        image: "/giay.png"
+        image: "/giay.png",
+        postedAt: "2025-09-28T20:50:55"
     },
     {
         id: 14,
@@ -128,7 +148,8 @@ const products = [
         category: "Tablet",
         condition: "Đã qua sử dụng",
         location: "Cần Thơ",
-        image: "/ipad.png"
+        image: "/ipad.png",
+        postedAt: "2025-09-30T17:40:35"
     },
     {
         id: 15,
@@ -137,7 +158,8 @@ const products = [
         category: "Điện tử",
         condition: "Mới",
         location: "Huế",
-        image: "/tv.png"
+        image: "/tv.png",
+        postedAt: "2025-09-27T12:10:50"
     },
     {
         id: 16,
@@ -146,11 +168,31 @@ const products = [
         category: "Đồ gia dụng",
         condition: "Mới",
         location: "Đồng Nai",
-        image: "/beptu.png"
+        image: "/beptu.png",
+        postedAt: "2025-09-29T09:35:15"
     }
+
 ];
 
+function TimeAgo(date) {
+    const now = new Date();
+    const seconds = Math.floor((now - new Date(date)) / 1000);
+    let interval = Math.floor(seconds / 31536000);
+    if (interval > 1) return interval + " năm trước";
+    interval = Math.floor(seconds / 2592000);
+    if (interval > 1) return interval + " tháng trước";
+    interval = Math.floor(seconds / 86400);
+    if (interval > 1) return interval + " ngày trước";
+    interval = Math.floor(seconds / 3600);
+    if (interval > 1) return interval + " giờ trước";
+    interval = Math.floor(seconds / 60);
+    if (interval > 1) return interval + " phút trước";
+    return Math.floor(seconds) + " giây trước";
+
+}
 function Home() {
+    // Hàm tính thời gian đăng
+
 
     const provinces = [
         "Hà Nội",
@@ -180,24 +222,42 @@ function Home() {
     const navigate = useNavigate();
 
     return (
+
         <div className="h-full w-full bg-amber-100">
             {/* Navbar */}
-            <div className="navbar top-0 fixed w-full z-50  bg-base-100 shadow-sm gap-2 justify-center mx-auto">
+            <div className="navbar  top-0 fixed w-full z-50  bg-base-100 shadow-sm gap-2 justify-center mx-auto">
                 <div className="flex-none">
                     <button className="btn btn-square btn-ghost">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            className="inline-block h-5 w-5 stroke-current"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M4 6h16M4 12h16M4 18h16"
-                            ></path>
-                        </svg>
+                        <details className="dropdown ">
+                            <summary className="btn m-1 bg-base-100 border-none hover:bg-gray-300  ">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    className=" inline-block h-5 w-5  stroke-current "
+
+                                >
+
+
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M4 6h16M4 12h16M4 18h16"
+                                    >
+
+                                    </path>
+                                </svg>
+
+                            </summary>
+
+                            <ul className="menu dropdown-content  bg-base-100 rounded-box z-1 w-70 p-2 shadow-sm">
+                                <DanhMuc />
+
+                            </ul>
+
+                        </details>
+
                     </button>
                 </div>
                 <div>
@@ -258,14 +318,14 @@ function Home() {
                     <i className="fa-regular fa-bell"></i>
                 </div>
 
-                <div className="bg-white">
+                <div className="bg-white  ">
                     <button
-                        className="btn rounded-full"
+                        className="btn rounded-full mx-1"
                         onClick={() => navigate("/Login")}
                     >
                         Đăng nhập
                     </button>
-                    <button className="btn rounded-full bg-yellow-300">Đăng tin</button>
+                    <button className="btn rounded-full bg-yellow-300 mx-1">Đăng tin</button>
                 </div>
 
                 {/* Dropdown tài khoản */}
@@ -328,13 +388,19 @@ function Home() {
                                         <h2 className="card-title text-lg font-bold">
                                             {item.title}
                                         </h2>
-                                        <p className="text-green-600 font-semibold">
-                                            {new Intl.NumberFormat("vi-VN", {
-                                                style: "currency",
-                                                currency: "VND",
-                                            }).format(item.price)}
+                                        <p className="text-green-600 font-semibold flex justify-end">
+                                            {item.price.toLocaleString()} đ
                                         </p>
-                                        <p className="text-sm text-gray-500">{item.location}</p>
+                                        <div className="flex mx-2 space-x-3">
+                                            <p className="text-sm text-gray-500 "> {item.category}  </p>
+                                            <p className="text-lg text-red-500  flex justify-end ">  {item.condition}</p>
+                                        </div>
+                                        <div className="flex">
+                                            <p className="text-sm text-gray-500">📍 {item.location}</p>
+                                            <p className="text-xs text-gray-400 mt-1 justify-end flex flex-1">
+                                                {TimeAgo(item.postedAt)}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             ))}

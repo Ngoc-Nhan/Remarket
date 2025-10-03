@@ -8,6 +8,7 @@ import { NotebookTabs } from 'lucide-react';
 import { BoomBox } from 'lucide-react';
 import { CarFront } from 'lucide-react';
 import DanhMuc from "./DanhMuc";
+
 // Mock data sản phẩm
 const products = [
     {
@@ -39,7 +40,7 @@ const products = [
         condition: "Đã qua sử dụng",
         location: "Đà Nẵng",
         image: "/sh.png",
-        postedAt: "2025-10-1T10:3:30"
+        postedAt: "2025-10-03T07:35:30"
     },
     {
         id: 4,
@@ -150,6 +151,7 @@ const products = [
         location: "Cần Thơ",
         image: "/ipad.png",
         postedAt: "2025-09-30T17:40:35"
+        
     },
     {
         id: 15,
@@ -175,6 +177,7 @@ const products = [
 ];
 
 function TimeAgo(date) {
+
     const now = new Date();
     const seconds = Math.floor((now - new Date(date)) / 1000);
     let interval = Math.floor(seconds / 31536000);
@@ -191,6 +194,7 @@ function TimeAgo(date) {
 
 }
 function Home() {
+
     // Hàm tính thời gian đăng
 
 
@@ -220,6 +224,11 @@ function Home() {
 
     const [activeTab, setActiveTab] = useState("forYou");
     const navigate = useNavigate();
+    const [searchTerm, setSearchTerm] = useState("");
+    const filteredProducts = products.filter((p) =>
+        p.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     return (
 
@@ -308,7 +317,15 @@ function Home() {
                             <path d="m21 21-4.3-4.3"></path>
                         </g>
                     </svg>
-                    <input type="search" required placeholder="Tìm sản phẩm..." />
+                    <input type="search" required placeholder="Tìm sản phẩm..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    {/* <ul>
+                        {filteredProducts.map((item) => (
+                            <li key={item.id}>{item.category}</li>
+                        ))}
+                    </ul> */}
                 </label>
 
                 {/* Icon */}
@@ -379,21 +396,21 @@ function Home() {
                 <div className="mt-4 bg-white p-6 rounded-2xl ">
                     {activeTab === "forYou" && (
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                            {products.map((item) => (
-                                <div key={item.id} className="card bg-base-100 shadow-md  hover:bg-gray-200">
+                            {filteredProducts.map((item) => (
+                                <div key={item.id} className="card bg-base-100 shadow-md hover:bg-gray-200">
                                     <figure>
-                                        <img className="h-50 mt-4 " src={item.image} alt={item.title} />
+                                        <img className="h-50 mt-4" src={item.image} alt={item.title} />
                                     </figure>
-                                    <div className="card-body ">
-                                        <h2 className="card-title text-lg font-bold">
-                                            {item.title}
-                                        </h2>
+                                    <div className="card-body">
+                                        <h2 className="card-title text-lg font-bold">{item.title}</h2>
                                         <p className="text-green-600 font-semibold flex justify-end">
                                             {item.price.toLocaleString()} đ
                                         </p>
                                         <div className="flex mx-2 space-x-3">
-                                            <p className="text-sm text-gray-500 "> {item.category}  </p>
-                                            <p className="text-lg text-red-500  flex justify-end ">  {item.condition}</p>
+                                            <p className="text-sm text-gray-500">{item.category}</p>
+                                            <p className="text-lg text-red-500 flex justify-end">
+                                                {item.condition}
+                                            </p>
                                         </div>
                                         <div className="flex">
                                             <p className="text-sm text-gray-500">📍 {item.location}</p>
@@ -406,6 +423,7 @@ function Home() {
                             ))}
                         </div>
                     )}
+
 
                     {activeTab === "latest" && <p>Danh sách sản phẩm mới nhất 🚀</p>}
                     {activeTab === "video" && <p>Danh sách video 🎥</p>}

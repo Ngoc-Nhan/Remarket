@@ -2,13 +2,21 @@
 import React from "react";
 import TypeIt from "typeit-react";
 import bgImage from "../assets/login_sale.jpg";
+import { jwtDecode } from "jwt-decode";
+import { useDispatch } from "react-redux";
+
+import { setUser } from "../redux/userSlice";
+import { useNavigate } from "react-router-dom";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { FaFacebook, FaApple, FaGoogle } from "react-icons/fa";
 
 const CLIENT_ID =
   "162064755179-6ubjagcdi9nrq3o3kn0mab3tb14vv27a.apps.googleusercontent.com";
+// ... bên trong component Login()
 
 function Login() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   return (
     <GoogleOAuthProvider clientId={CLIENT_ID}>
       <div
@@ -78,19 +86,22 @@ function Login() {
             {/* Google */}
             <GoogleLogin
               onSuccess={(credentialResponse) => {
-                console.log("Google success:", credentialResponse);
+                const decoded = jwtDecode(credentialResponse.credential);
+                console.log("Thông tin người dùng:", decoded);
+
+                dispatch(
+                  setUser({
+                    name: decoded.name,
+                    email: decoded.email,
+                    picture: decoded.picture,
+                  })
+                );
+
+                navigate("/home");
               }}
               onError={() => {
                 console.log("Google login failed");
               }}
-              render={({ onClick }) => (
-                <button
-                  onClick={onClick}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-400 text-gray-700 rounded-lg hover:bg-gray-100 transition h-11"
-                >
-                  <FaGoogle size={20} className="text-red-500" /> Google
-                </button>
-              )}
             />
 
             {/* Apple */}

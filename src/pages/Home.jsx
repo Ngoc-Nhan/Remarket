@@ -338,11 +338,24 @@ function Home() {
             // Nếu đã đăng nhập, hiện avatar + dropdown và button "Đăng tin"
             <>
               <button
+                className="btn btn-sm rounded-full bg-green-300 mx-1"
+                onClick={() => navigate("/ManagePost")}
+              >
+                Quản lý tin
+              </button>
+              <button
                 className="btn btn-sm rounded-full bg-yellow-300 mx-1"
-                onClick={() => navigate("/post")}
+                onClick={() => {
+                  if (!user) {
+                    alert("Vui lòng đăng nhập để tiếp tục")
+                    navigate("/login")
+                  }
+                  else navigate("/PostNews")
+                }}
               >
                 Đăng tin
               </button>
+
 
               <div className="dropdown">
                 <div

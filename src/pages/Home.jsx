@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ChevronDown, MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Laptop } from "lucide-react";
@@ -10,6 +10,7 @@ import { CarFront } from "lucide-react";
 import DanhMuc from "./DanhMuc";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../redux/userSlice";
+import { setUser } from "../redux/userSlice";
 
 // Mock data sản phẩm
 const products = [
@@ -195,6 +196,12 @@ function Home() {
   const user = useSelector((state) => state.user.user);
 
   const dispatch = useDispatch();
+
+  // ✅ Khi load lại trang, lấy user từ localStorage rồi set vào Redux
+  useEffect(() => {
+    const savedUser = JSON.parse(localStorage.getItem("user"));
+    if (savedUser) dispatch(setUser(savedUser));
+  }, [dispatch]);
 
   const provinces = [
     "Hà Nội",

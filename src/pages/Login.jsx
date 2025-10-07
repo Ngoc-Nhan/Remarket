@@ -87,16 +87,22 @@ function Login() {
             <GoogleLogin
               onSuccess={(credentialResponse) => {
                 const decoded = jwtDecode(credentialResponse.credential);
+
                 console.log("Thông tin người dùng:", decoded);
 
-                dispatch(
-                  setUser({
-                    name: decoded.name,
-                    email: decoded.email,
-                    picture: decoded.picture,
-                  })
-                );
+                const newUser = {
+                  name: decoded.name,
+                  email: decoded.email,
+                  picture: decoded.picture,
+                };
 
+                // Cập nhật Redux
+                dispatch(setUser(newUser));
+
+                // Lưu user vào localStorage
+                localStorage.setItem("user", JSON.stringify(newUser));
+
+                // Điều hướng
                 navigate("/home");
               }}
               onError={() => {

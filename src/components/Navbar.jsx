@@ -7,13 +7,13 @@ import { logout } from "../redux/userSlice";
 
 import DanhMuc from "../pages/DanhMuc";
 import { provinces } from '../constant/constant';
-
+import { useDispatch } from 'react-redux';
 
 
 export default function Navbar({ searchTerm, setSearchTerm }) {
     const user = useSelector((state) => state.user.user);
     const navigate = useNavigate();
-
+    const dispatch = useDispatch();
 
     return (
 

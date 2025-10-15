@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 
 import { setUser } from "../redux/userSlice";
 
-import Navbar from "../components/Navbar";
+import Navbar from "../components/Navbar/Navbar";
 import { products } from "../constant/constant";
 import ListSp from "../components/ListSp";
 

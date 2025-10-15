@@ -1,19 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { ChevronDown, MapPin } from "lucide-react";
 
-import { Laptop } from "lucide-react";
-import { Shirt } from "lucide-react";
-import { Armchair } from "lucide-react";
-import { NotebookTabs } from "lucide-react";
-import { BoomBox } from "lucide-react";
-import { CarFront } from "lucide-react";
-import DanhMuc from "./DanhMuc";
 import { useDispatch } from "react-redux";
 
 import { setUser } from "../redux/userSlice";
-import Card from "../components/Card";
+
 import Navbar from "../components/Navbar";
 import { products } from "../constant/constant";
+import ListSp from "../components/ListSp";
+
 
 
 
@@ -73,11 +67,8 @@ function Home() {
         {/* Nội dung Tab */}
         <div className="mt-4 bg-white p-6 rounded-2xl ">
           {activeTab === "forYou" && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {filteredProducts.map((item) => (
-                <Card item={item} />
-              ))}
-            </div>
+            <ListSp filteredProducts={filteredProducts} />
+
           )}
 
           {activeTab === "latest" && <p>Danh sách sản phẩm mới nhất 🚀</p>}

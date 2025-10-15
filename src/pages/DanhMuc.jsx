@@ -1,23 +1,34 @@
-import React from 'react'
-import { Laptop, Shirt, Armchair, NotebookTabs, BoomBox, CarFront } from 'lucide-react';
+import React from "react";
+import { Laptop, Shirt, Armchair, NotebookTabs, BoomBox, CarFront } from "lucide-react";
 
-function DanhMuc() {
+function DanhMuc({ hideTitle = false, itemClass = "" }) {
+    const danhMuc = [
+        { icon: <Laptop />, name: "Điện tử - Công nghệ" },
+        { icon: <Shirt />, name: "Thời trang" },
+        { icon: <Armchair />, name: "Đồ gia dụng" },
+        { icon: <NotebookTabs />, name: "Sách & Văn phòng phẩm" },
+        { icon: <BoomBox />, name: "Đồ chơi & Giải trí" },
+        { icon: <CarFront />, name: "Xe cộ" },
+    ];
+
     return (
         <div>
-            {/* Danh mục chính */}
-            <div className="">
-                <h1 className='text-lg'>Danh mục</h1>
-                <div className="text-gray-500 font-medium mt-2 ">
-                    <li className="hover:text-black"><a><Laptop />Điện tử - Công nghệ</a></li>
-                    <li className="hover:text-black"><a> <Shirt />Thời trang</a></li>
-                    <li className="hover:text-black"><a> <Armchair />Đồ gia dụng</a></li>
-                    <li className="hover:text-black"><a><NotebookTabs />Sách & Văn phòng phẩm</a></li>
-                    <li className="hover:text-black"><a> <BoomBox />Đồ chơi & Giải trí</a></li>
-                    <li className="hover:text-black"><a><CarFront />Xe cộ</a></li>
-                </div>
-            </div>
+            {/* Ẩn hoặc hiện tiêu đề tuỳ prop */}
+            {!hideTitle && <h1 className="text-lg font-semibold mb-2">Danh mục</h1>}
+
+            <ul className="text-gray-700 font-medium space-y-2 ">
+                {danhMuc.map((item, index) => (
+                    <li
+                        key={index}
+                        className={`hover:bg-gray-50 flex items-center gap-2 cursor-pointer transition-all ${itemClass}`}
+                    >
+                        {item.icon}
+                        <span>{item.name}</span>
+                    </li>
+                ))}
+            </ul>
         </div>
-    )
+    );
 }
 
-export default DanhMuc
+export default DanhMuc;

@@ -37,9 +37,9 @@ export default function Navbar({ searchTerm, setSearchTerm }) {
                             </svg>
                         </summary>
 
-                        <ul className="menu dropdown-content  bg-base-100 rounded-box z-1 w-70 p-2 shadow-sm">
+                        <div className="dropdown-content bg-base-100 rounded-box w-[350px] p-4 shadow-sm ">
                             <DanhMuc />
-                        </ul>
+                        </div>
                     </details>
                 </button>
             </div>

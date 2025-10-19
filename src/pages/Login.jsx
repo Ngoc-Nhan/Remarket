@@ -1,4 +1,3 @@
-// src/pages/Login.jsx
 import React from "react";
 import TypeIt from "typeit-react";
 import bgImage from "../assets/login_sale.jpg";
@@ -10,8 +9,15 @@ import { useNavigate } from "react-router-dom";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { FaFacebook, FaApple, FaGoogle } from "react-icons/fa";
 
+import {
+  getAuth,
+  signInWithCredential,
+  GoogleAuthProvider,
+} from "firebase/auth";
+import { app } from "../firebaseConfig";
+
 const CLIENT_ID =
-  "162064755179-6ubjagcdi9nrq3o3kn0mab3tb14vv27a.apps.googleusercontent.com";
+  "162064755179-5e475s56kn539ntm1fh6ndmgsvu1k8c8.apps.googleusercontent.com";
 // ... bên trong component Login()
 
 function Login() {
@@ -85,28 +91,37 @@ function Login() {
 
             {/* Google */}
             <GoogleLogin
-              onSuccess={(credentialResponse) => {
+              onSuccess={async (credentialResponse) => {
                 const decoded = jwtDecode(credentialResponse.credential);
 
                 console.log("Thông tin người dùng:", decoded);
 
+                // ✅ Bước 1: Đồng bộ token Google với Firebase
+
+                const auth = getAuth(app);
+                const credential = GoogleAuthProvider.credential(
+                  credentialResponse.credential
+                );
+                const result = await signInWithCredential(auth, credential); // Đăng nhập Firebase
+
+                // ✅ Bước 2: Lấy thông tin user từ Firebase
+                const firebaseUser = result.user;
+
+                // ✅ Bước 3: Cập nhật Redux & localStorage (vẫn giữ như cũ)
                 const newUser = {
-                  name: decoded.name,
-                  email: decoded.email,
-                  picture: decoded.picture,
+                  name: firebaseUser.displayName,
+                  email: firebaseUser.email,
+                  picture: firebaseUser.photoURL,
                 };
 
-                // Cập nhật Redux
                 dispatch(setUser(newUser));
-
-                // Lưu user vào localStorage
                 localStorage.setItem("user", JSON.stringify(newUser));
 
-                // Điều hướng
+                // ✅ Điều hướng
                 navigate("/home");
               }}
               onError={() => {
-                console.log("Google login failed");
+                console.error("Đăng nhập Google thất bại");
               }}
             />
 

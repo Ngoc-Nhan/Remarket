@@ -8,10 +8,6 @@ import Navbar from "../components/Navbar/Navbar";
 import { products } from "../constant/constant";
 import ListSp from "../components/ListSp";
 
-
-
-
-
 function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const filteredProducts = products.filter(
@@ -22,7 +18,6 @@ function Home() {
   const [isExpanded, setIsExpanded] = useState(false);
   // Hàm tính thời gian đăng
 
-
   const dispatch = useDispatch();
 
   // ✅ Khi load lại trang, lấy user từ localStorage rồi set vào Redux
@@ -31,10 +26,7 @@ function Home() {
     if (savedUser) dispatch(setUser(savedUser));
   }, [dispatch]);
 
-
-
   const [activeTab, setActiveTab] = useState("forYou");
-
 
   return (
     <div className="h-full w-full bg-amber-100">
@@ -68,7 +60,6 @@ function Home() {
         <div className="mt-4 bg-white p-6 rounded-2xl ">
           {activeTab === "forYou" && (
             <ListSp filteredProducts={filteredProducts} />
-
           )}
 
           {activeTab === "latest" && <p>Danh sách sản phẩm mới nhất 🚀</p>}
@@ -80,40 +71,47 @@ function Home() {
           </div>
         </div>
         <div className="bg-white mt-4 p-6  rounded-2xl">
-          <h2 className="text-xl">Secondhand Shop – Đồ Cũ, Lối Sống Mới – Tiết Kiệm & Bền Vững</h2>
+          <h2 className="text-xl">
+            Secondhand Shop – Đồ Cũ, Lối Sống Mới – Tiết Kiệm & Bền Vững
+          </h2>
           <div className="text-gray-500 mt-2 space-y-2">
             <span>
               <strong>Secondhand Shop </strong>
-              ra đời với sứ mệnh giúp bạn mua bán, trao đổi đồ cũ một cách
-              dễ dàng – nhanh chóng – an toàn – tiết kiệm.
+              ra đời với sứ mệnh giúp bạn mua bán, trao đổi đồ cũ một cách dễ
+              dàng – nhanh chóng – an toàn – tiết kiệm.
             </span>
             <br />
             <span>
-              Chúng tôi tạo ra một không gian trung gian đáng tin cậy, nơi người có đồ không dùng nữa có thể kết nối trực tiếp với người đang cần,
+              Chúng tôi tạo ra một không gian trung gian đáng tin cậy, nơi người
+              có đồ không dùng nữa có thể kết nối trực tiếp với người đang cần,
               mang đến những giao dịch tiện lợi và giá trị bền vững.
             </span>
             <br />
             <span>
-              <strong>Secondhand Shop </strong> là nền tảng mua bán đồ cũ mới ra mắt, được xây dựng với mong muốn mang đến cho người dùng Việt Nam một không gian trao đổi đồ cũ an toàn,
-              tiện lợi và tiết kiệm.
+              <strong>Secondhand Shop </strong> là nền tảng mua bán đồ cũ mới ra
+              mắt, được xây dựng với mong muốn mang đến cho người dùng Việt Nam
+              một không gian trao đổi đồ cũ an toàn, tiện lợi và tiết kiệm.
             </span>
             <br />
             <span>
-              Tại đây, bạn có thể dễ dàng đăng tin hoặc
-              tìm kiếm hàng ngàn sản phẩm thuộc nhiều lĩnh vực:
+              Tại đây, bạn có thể dễ dàng đăng tin hoặc tìm kiếm hàng ngàn sản
+              phẩm thuộc nhiều lĩnh vực:
             </span>
             <br />
             {isExpanded && (
               <div className="mt-3 text-gray-500">
                 <ul className="list-disc ml-6 space-y-2">
                   <li>
-                    <strong>Đồ điện tử</strong>: Điện thoại, laptop, tivi, tủ lạnh, máy lạnh...
+                    <strong>Đồ điện tử</strong>: Điện thoại, laptop, tivi, tủ
+                    lạnh, máy lạnh...
                   </li>
                   <li>
-                    <strong>Nội thất & Gia dụng</strong>: Bàn ghế, tủ, giường, quạt, đồ bếp...
+                    <strong>Nội thất & Gia dụng</strong>: Bàn ghế, tủ, giường,
+                    quạt, đồ bếp...
                   </li>
                   <li>
-                    <strong>Thời trang</strong>: Quần áo, giày dép, túi xách, phụ kiện thời trang...
+                    <strong>Thời trang</strong>: Quần áo, giày dép, túi xách,
+                    phụ kiện thời trang...
                   </li>
                   <li>
                     <strong>Phương tiện</strong>: Xe máy, xe đạp, ô tô...
@@ -124,29 +122,32 @@ function Home() {
                 </ul>
 
                 <p className="mt-3">
-                  Chúng tôi tin rằng mỗi món đồ cũ đều mang một giá trị riêng – và Secondhand Shop ra đời để giúp bạn tái sử dụng,
-                  tiết kiệm chi phí và góp phần bảo vệ môi trường.
+                  Chúng tôi tin rằng mỗi món đồ cũ đều mang một giá trị riêng –
+                  và Secondhand Shop ra đời để giúp bạn tái sử dụng, tiết kiệm
+                  chi phí và góp phần bảo vệ môi trường.
                 </p>
 
                 <p className="mt-2">
-                  Chỉ với vài bước đơn giản – chụp ảnh, viết mô tả ngắn gọn và đăng tin – bạn đã có thể kết nối với hàng ngàn người mua tiềm năng.
+                  Chỉ với vài bước đơn giản – chụp ảnh, viết mô tả ngắn gọn và
+                  đăng tin – bạn đã có thể kết nối với hàng ngàn người mua tiềm
+                  năng.
                 </p>
 
                 <div className="flex justify-center mt-3">
                   <em>
-                    <strong>Secondhand Shop – Khởi đầu mới cho những món đồ cũ.</strong>
+                    <strong>
+                      Secondhand Shop – Khởi đầu mới cho những món đồ cũ.
+                    </strong>
                   </em>
                 </div>
               </div>
             )}
-            <button className="border-1 rounded-lg p-1.5 "
+            <button
+              className="border-1 rounded-lg p-1.5 "
               onClick={() => setIsExpanded(!isExpanded)}
-
             >
               {isExpanded ? "Thu gọn" : "Mở rộng"}
-
             </button>
-
           </div>
         </div>
 
@@ -240,7 +241,7 @@ function Home() {
           </nav>
         </footer>
       </div>
-    </div >
+    </div>
   );
 }
 

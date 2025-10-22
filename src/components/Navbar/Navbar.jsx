@@ -19,9 +19,14 @@ export default function Navbar({ searchTerm, setSearchTerm }) {
             <MenuDropdown />
 
             <div>
-                <a className="btn btn-ghost text-xl">
+                <div
+                    className="btn btn-ghost text-xl cursor-pointer"
+                    onClick={() => navigate("/")}
+                >
                     <img src="./logo.png" className="w-15" alt="logo" />
-                </a>
+                </div>
+
+
             </div>
 
             <RegionSelector />

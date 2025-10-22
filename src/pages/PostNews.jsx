@@ -8,6 +8,7 @@ import GShopping from "../assets/GShopping.jpg";
 import SearchBar from "../components/Navbar/SearchBar"
 import { Handbag } from 'lucide-react';
 import { Bell } from 'lucide-react';
+import { Link } from "react-router-dom";
 import { MessagesSquare } from 'lucide-react';
 
 import {
@@ -23,22 +24,22 @@ function PostNews() {
     const [showPopup, setShowPopup] = useState(false);
     // const [filteredProducts, setFilteredProducts] = useState(products);
 
-    useEffect(() => {
-        // Hiển popup sau 1 giây khi vào trang
-        const timer = setTimeout(() => {
-            setShowPopup(true);
-        }, 1000);
-        return () => clearTimeout(timer);
-    }, []);
+    // useEffect(() => {
+    //     // Hiển popup sau 1 giây khi vào trang
+    //     const timer = setTimeout(() => {
+    //         setShowPopup(true);
+    //     }, 1000);
+    //     return () => clearTimeout(timer);
+    // }, []);
 
     return (
         <div className="min-h-screen bg-gray-50 relative overflow-hidden">
             {/* Navbar */}
             <div className="navbar top-0 fixed w-full z-50 bg-base-100 shadow-sm gap-2 justify-center mx-auto">
                 <div>
-                    <a className="btn btn-ghost text-xl">
+                    <Link className="btn btn-ghost text-xl" to="/">
                         <img src="./logo.png" className="w-15" alt="logo" />
-                    </a>
+                    </Link>
                 </div>
                 <MenuDropdown />
 
@@ -122,29 +123,29 @@ function PostNews() {
 
             {/* Popup nổi lên */}
             {
-                showPopup && (
-                    <div className="fixed inset-0 flex justify-center items-center z-50 bg-black/30 backdrop-blur-sm">
-                        <div className="bg-white w-96 rounded-2xl shadow-xl p-6 relative pointer-events-auto">
-                            <button
-                                className="absolute top-2 right-3 text-xl font-bold hover:text-red-500"
-                                onClick={() => setShowPopup(false)}
-                            >
-                                ×
-                            </button>
-                            <h2 className="text-2xl font-semibold mb-3 text-gray-800">
-                                Đăng tin mới
-                            </h2>
+                // showPopup && (
+                //     <div className="fixed inset-0 flex justify-center items-center z-50 bg-black/30 backdrop-blur-sm">
+                //         <div className="bg-white w-96 rounded-2xl shadow-xl p-6 relative pointer-events-auto">
+                //             <button
+                //                 className="absolute top-2 right-3 text-xl font-bold hover:text-red-500"
+                //                 onClick={() => setShowPopup(false)}
+                //             >
+                //                 ×
+                //             </button>
+                //             <h2 className="text-2xl font-semibold mb-3 text-gray-800">
+                //                 Đăng tin mới
+                //             </h2>
 
-                            {/* Form trong popup */}
-                            <form className="space-y-3">
-                                <p className="text-medium">CHỌN DANH MỤC</p>
-                                <DanhMuc hideTitle className="m-2" itemClass="p-1" />
+                //             {/* Form trong popup */}
+                //             <form className="space-y-3">
+                //                 <p className="text-medium">CHỌN DANH MỤC</p>
+                //                 <DanhMuc hideTitle className="m-2" itemClass="p-1" />
 
 
-                            </form>
-                        </div>
-                    </div>
-                )
+                //             </form>
+                //         </div>
+                //     </div>
+                // )
             }
         </div >
     );

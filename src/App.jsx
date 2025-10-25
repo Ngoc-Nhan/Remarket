@@ -7,6 +7,7 @@ import ManagePost from "./pages/ManagePost";
 import ListSp from "./components/ListSp";
 import UserProfile from "./components/UserProfile";
 import Layout from "./components/Layout";
+import ProductDetail from "./pages/ProductDetail";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/ManagePost" element={<ManagePost />} />
         <Route path="/ListSp" element={<ListSp />} />
         <Route path="/profile" element={<UserProfile />} />
+        <Route path="/product/:id" element={<ProductDetail />} />
       </Route>
 
       {/* Trang không dùng Navbar */}

@@ -1,5 +1,5 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../redux/userSlice";
 
@@ -8,31 +8,45 @@ import RegionSelector from "./RegionSelector";
 import SearchBar from "./SearchBar";
 import IconsGroup from "./IconsGroup";
 import UserMenu from "./UserMenu";
+import { Bell, ChevronDown, Handbag, MessagesSquare, SquarePen } from "lucide-react";
 
 export default function Navbar({ searchTerm, setSearchTerm }) {
     const user = useSelector((state) => state.user.user);
     const navigate = useNavigate();
     const dispatch = useDispatch();
-
+    const [selectedData, setSelectedData] = useState("");
+    const [showDanhMuc, setShowDanhMuc] = useState(false);
+    const localtion = useLocation();
+    const isPostNewsPage = localtion.pathname === '/PostNews';
     return (
-        <div className="navbar top-0 fixed w-full z-50 bg-base-100 shadow-sm gap-2 justify-center mx-auto">
-            <MenuDropdown />
-
-            <div>
-                <div
-                    className="btn btn-ghost text-xl cursor-pointer"
-                    onClick={() => navigate("/")}
-                >
+        <div className="navbar  top-0 fixed w-full z-50 bg-base-100 shadow-sm gap-5  justify-around ">
+            {/* Logo */}
+            <div className="flex items-center gap-5">
+                <Link className="btn btn-ghost text-xl" to="/">
                     <img src="./logo.png" className="w-15" alt="logo" />
-                </div>
-
+                </Link>
+                {isPostNewsPage ? null : (
+                    <div className="flex text-xl items-center gap-1 cursor-pointer">
+                        <MenuDropdown mode="click" />
+                        <p>Danh Mục</p>
+                    </div>
+                )}
 
             </div>
 
-            <RegionSelector />
-            <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-            <IconsGroup />
-            <UserMenu user={user} navigate={navigate} dispatch={dispatch} logout={logout} />
+            <SearchBar />
+
+            {/* Icon Section */}
+            <div className="flex gap-6 text-xl items-center">
+                <Bell />
+                <MessagesSquare />
+                <Handbag />
+
+                {/* User Menu */}
+
+                <UserMenu user={user} navigate={navigate} dispatch={dispatch} logout={logout} ></UserMenu>
+            </div>
         </div>
+
     );
 }

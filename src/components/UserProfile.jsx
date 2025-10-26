@@ -224,9 +224,8 @@ function UserProfile() {
 
     const fullAddress =
       wardName && districtName && provinceName
-        ? `${
-            specificAddress ? specificAddress + ", " : ""
-          }${wardName}, ${districtName}, ${provinceName}`
+        ? `${specificAddress ? specificAddress + ", " : ""
+        }${wardName}, ${districtName}, ${provinceName}`
         : "";
 
     setFormData((prev) => ({
@@ -350,8 +349,8 @@ function UserProfile() {
               <span className="font-medium">📅 Ngày tham gia:</span>{" "}
               {user?.metadata?.creationTime
                 ? new Date(user.metadata.creationTime).toLocaleDateString(
-                    "vi-VN"
-                  )
+                  "vi-VN"
+                )
                 : "Không xác định"}
             </p>
             <p>
@@ -409,11 +408,10 @@ function UserProfile() {
             <div className="flex border-b border-gray-200">
               <button
                 onClick={() => setActiveTab("active")}
-                className={`flex-1 py-4 text-center font-semibold transition relative ${
-                  activeTab === "active"
+                className={`flex-1 py-4 text-center font-semibold transition relative ${activeTab === "active"
                     ? "text-orange-500"
                     : "text-gray-500 hover:text-gray-700"
-                }`}
+                  }`}
               >
                 Đang hiển thị ({activePosts})
                 {activeTab === "active" && (
@@ -422,11 +420,10 @@ function UserProfile() {
               </button>
               <button
                 onClick={() => setActiveTab("sold")}
-                className={`flex-1 py-4 text-center font-semibold transition relative ${
-                  activeTab === "sold"
+                className={`flex-1 py-4 text-center font-semibold transition relative ${activeTab === "sold"
                     ? "text-orange-500"
                     : "text-gray-500 hover:text-gray-700"
-                }`}
+                  }`}
               >
                 Đã bán ({soldPosts})
                 {activeTab === "sold" && (
@@ -450,7 +447,7 @@ function UserProfile() {
                     Bắt đầu đăng tin để tiếp cận người mua ngay!
                   </p>
                   <button
-                    onClick={() => navigate("/dang-tin")}
+                    onClick={() => navigate("/PostNews")}
                     className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-bold transition uppercase shadow-md"
                   >
                     Đăng tin ngay
@@ -541,9 +538,8 @@ function UserProfile() {
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white cursor-pointer flex justify-between items-center hover:border-yellow-500 transition"
                   >
                     <span
-                      className={`${
-                        formData.address ? "text-gray-800" : "text-gray-400"
-                      }`}
+                      className={`${formData.address ? "text-gray-800" : "text-gray-400"
+                        }`}
                     >
                       {formData.address
                         ? formData.address

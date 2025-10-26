@@ -1,5 +1,5 @@
 import React from "react";
-import DanhMuc from "../../pages/DanhMuc";
+import DanhMuc from "../DanhMuc";
 
 export default function MenuDropdown() {
     return (

@@ -3,14 +3,13 @@ import categories from "../constant/categories";
 
 function FormInfo({ selectedChild, onFormChange }) {
     const [formValues, setFormValues] = useState({});
-    const [selectedSubCategory, setSelectedSubCategory] = useState(null); // để lưu lựa chọn con (ví dụ: "Phụ kiện máy tính")
+    const [selectedSubCategory, setSelectedSubCategory] = useState(null);
 
     const handleChange = (option, value) => {
         const updated = { ...formValues, [option]: value };
         setFormValues(updated);
         onFormChange(updated);
 
-        // Nếu chọn "Loại phụ kiện" → cập nhật loại con
         if (option === "Loại phụ kiện") {
             setSelectedSubCategory(value);
         }
@@ -27,98 +26,107 @@ function FormInfo({ selectedChild, onFormChange }) {
         setFormValues((prev) => {
             const updated = { ...prev };
             delete updated[option];
+            delete updated[option + "_custom"];
             return updated;
         });
         if (option === "Loại phụ kiện") setSelectedSubCategory(null);
     };
 
     const selectedChildrenData = categories[selectedChild];
-
     if (!selectedChildrenData) return null;
+
+    const renderField = (option, values) => {
+        const isOther = formValues[option] === "Khác";
+
+        return (
+            <div key={option} style={{ marginBottom: "16px", position: "relative" }}>
+                <label style={{ fontWeight: "bold", display: "block" }}>{option}:</label>
+
+                {/* Nếu chọn “Khác” → hiện input */}
+                {isOther ? (
+                    <input
+                        type="text"
+                        required
+                        placeholder={`Nhập ${option.toLowerCase()} `}
+                        value={formValues[option + "_custom"] || ""}
+                        onChange={(e) => handleInputChange(option + "_custom", e.target.value)}
+                        style={{
+                            width: "100%",
+                            padding: "8px 36px 8px 8px",
+                            borderRadius: "4px",
+                            border: "1px solid #ccc",
+                            outline: "none",
+                        }}
+                    />
+                ) : (
+                    <select
+                        value={formValues[option] || ""}
+                        onChange={(e) => handleChange(option, e.target.value)}
+                        style={{
+                            width: "100%",
+                            padding: "8px 36px 8px 8px",
+                            borderRadius: "4px",
+                            border: "1px solid #ccc",
+                            outline: "none",
+                            appearance: "none",
+                            WebkitAppearance: "none",
+                            MozAppearance: "none",
+                        }}
+                    >
+                        <option value="">-- Chọn {option} --</option>
+                        {values.map((v) => (
+                            <option key={v} value={v}>
+                                {v}
+                            </option>
+                        ))}
+                    </select>
+                )}
+
+                {/* Nút xóa luôn hiển thị rõ ràng */}
+                {(formValues[option] || formValues[option + "_custom"]) && (
+                    <button
+                        type="button"
+                        onClick={() => handleClear(option)}
+                        style={{
+                            position: "absolute",
+                            right: "10px",
+                            top: "50%",
+                            transform: "translateY(-10%)",
+                            background: "transparent",
+                            border: "none",
+                            color: "red",
+                            fontSize: "20px",
+                            cursor: "pointer",
+                            zIndex: 2,
+                        }}
+                        title="Xóa lựa chọn"
+                    >
+                        ×
+                    </button>
+                )}
+            </div>
+        );
+    };
 
     return (
         <div>
+            {/* Cấp đầu tiên */}
             {Object.entries(selectedChildrenData).map(([option, values]) => {
-                // Nếu option là "Loại phụ kiện" (object lồng nhau)
                 if (option === "Loại phụ kiện") {
-                    return (
-                        <div key={option} style={{ marginBottom: "16px" }}>
-                            <label style={{ fontWeight: "bold", display: "block" }}>{option}:</label>
-                            <select
-                                value={formValues[option] || ""}
-                                onChange={(e) => handleChange(option, e.target.value)}
-                                style={{
-                                    width: "100%",
-                                    padding: "8px 32px 8px 8px",
-                                    borderRadius: "4px",
-                                    border: "1px solid #ccc",
-                                }}
-                            >
-                                <option value="">-- Chọn {option} --</option>
-                                {Object.keys(values).map((key) => (
-                                    <option key={key} value={key}>
-                                        {key}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    );
+                    return renderField(option, Object.keys(values));
                 }
-
-                // Nếu là mảng bình thường
                 if (Array.isArray(values)) {
-                    return (
-                        <div key={option} style={{ marginBottom: "16px" }}>
-                            <label style={{ fontWeight: "bold", display: "block" }}>{option}:</label>
-                            <select
-                                value={formValues[option] || ""}
-                                onChange={(e) => handleChange(option, e.target.value)}
-                                style={{
-                                    width: "100%",
-                                    padding: "8px 32px 8px 8px",
-                                    borderRadius: "4px",
-                                    border: "1px solid #ccc",
-                                }}
-                            >
-                                <option value="">-- Chọn {option} --</option>
-                                {values.map((v) => (
-                                    <option key={v} value={v}>
-                                        {v}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    );
+                    return renderField(option, values);
                 }
-
                 return null;
             })}
 
-            {/* Nếu người dùng đã chọn loại phụ kiện thì hiển thị thêm các thuộc tính con */}
+            {/* Hiển thị các thuộc tính con nếu có */}
             {selectedChildrenData["Loại phụ kiện"] &&
                 selectedSubCategory &&
-                Object.entries(selectedChildrenData["Loại phụ kiện"][selectedSubCategory]).map(([option, values]) => (
-                    <div key={option} style={{ marginBottom: "16px" }}>
-                        <label style={{ fontWeight: "bold", display: "block" }}>{option}:</label>
-                        <select
-                            value={formValues[option] || ""}
-                            onChange={(e) => handleChange(option, e.target.value)}
-                            style={{
-                                width: "100%",
-                                padding: "8px 32px 8px 8px",
-                                borderRadius: "4px",
-                                border: "1px solid #ccc",
-                            }}
-                        >
-                            <option value="">-- Chọn {option} --</option>
-                            {values.map((v) => (
-                                <option key={v} value={v}>
-                                    {v}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                ))}
+                Object.entries(selectedChildrenData["Loại phụ kiện"][selectedSubCategory]).map(([option, values]) =>
+                    renderField(option, values)
+                )}
         </div>
     );
 }

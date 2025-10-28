@@ -30,7 +30,7 @@ function DanhMuc({ setSelectedData, setShowDanhMuc, hideTitle = false, itemClass
         {
             icon: <Shirt />,
             name: "Thời trang",
-            children: ["Áo", "Quần", "Giày dép", "Phụ kiện", "Túi xách"],
+            children: ["Quần áo", "Giày dép", "Phụ kiện thời trang", "Túi xách"],
         },
         {
             icon: <Armchair />,

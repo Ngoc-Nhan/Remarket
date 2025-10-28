@@ -31,7 +31,7 @@ export default function UserMenu({ navigate, dispatch, logout }) {
             <div
               tabIndex={0}
               role="button"
-              className="btn m-1 justify-center items-center gap-2 rounded-full text-xl"
+              className="btn m-1 justify-center pl-1 items-center gap-2 rounded-full text-xl"
             >
               <img
                 src={

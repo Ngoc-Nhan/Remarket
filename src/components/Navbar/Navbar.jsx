@@ -27,7 +27,7 @@ export default function Navbar({ searchTerm, setSearchTerm }) {
                 </Link>
                 {isPostNewsPage ? null : (
                     <div className="flex text-xl items-center gap-1 cursor-pointer">
-                        <MenuDropdown mode="click" />
+                        <MenuDropdown />
                         <p>Danh Mục</p>
                     </div>
                 )}

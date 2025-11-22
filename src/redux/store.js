@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { userReducer } from './user/userSlice'
+import cartReducer from './cart/cartSlice'
 
 // * Cầu hình redux-persist
 // * https://www.npmjs.com/package/redux-persist
@@ -19,7 +20,8 @@ const rootPersistConfig = {
 
 // Combine các reducers trong dự án của chúng ta ở đây
 const reducers = combineReducers({
-  user: userReducer
+  user: userReducer,
+  cart: cartReducer
 })
 
 // thực hiện persist reducers

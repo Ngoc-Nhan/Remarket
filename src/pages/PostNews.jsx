@@ -1,299 +1,639 @@
-import React, { Children, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
-
+import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Camera, Info } from 'lucide-react'
+// import { uploadFileToCloudinary } from '@/services/api/cloudinary'
+// import { useCreatePost } from '@/services/query/post'
+// import { useGetCategories } from '@/services/query/category'
+// import { AddressDialog } from '@/components/dialog/AddressDialog'
+import { toast } from 'sonner'
+import React from 'react'
+import AddressDialog from '../components/dialog/AddressDialog'
+const ageMap = {
+  PUPPY: 'Chó con',
+  YOUNG_DOG: 'Chó nhỏ',
+  ADULT_DOG: 'Chó trưởng thành',
+  OTHER: 'Khác'
+}
 
-import DanhMuc from '../components/DanhMuc'
+const sizeMap = {
+  MINI: 'Mini',
+  SMALL: 'Nhỏ',
+  MEDIUM: 'Vừa',
+  LARGE: 'Lớn'
+}
 
-import {
-  Bell,
-  Handbag,
-  MessagesSquare,
-  ChevronDown,
-  Camera
-} from 'lucide-react'
-import FormInfo from '../components/FormInfo'
-
-import GShopping from '../assets/GShopping.jpg'
-import Navbar from '../components/Navbar/Navbar'
-import MyPosts from './MyPosts'
-
-function PostNews() {
+export default function PostNews() {
   const navigate = useNavigate()
 
+  // Image states
   const [selectedImages, setSelectedImages] = useState([])
+  const [previewUrls, setPreviewUrls] = useState([])
+  const fileInputRef = useRef(null)
 
-  const handleChangeImage = (event) => {
-    const files = Array.from(event.target.files)
-    const newImages = []
+  // Form states
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [price, setPrice] = useState('')
+  const [age, setAge] = useState('')
+  const [size, setSize] = useState('')
+  const [category, setCategory] = useState('')
+  const [address, setAddress] = useState(null)
+  const [showAddressDialog, setShowAddressDialog] = useState(false)
 
-    files.forEach((file) => {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        newImages.push(reader.result)
-        if (newImages.length === files.length) {
-          setSelectedImages((prev) => [...prev, ...newImages])
-        }
+  // Loading and error states
+  const [isUploading, setIsUploading] = useState(false)
+  const [errors, setErrors] = useState({})
+
+  // API calls
+  // const { data: categoriesData, isLoading: isCategoriesLoading } =
+  //   useGetCategories({
+  //     page: 1,
+  //     limit: 100
+  //   })
+  const isCategoriesLoading = false
+  const categories = []
+  const createPostMutation = { isPending: false, mutate: () => {} }
+  // const categories =
+  //   categoriesData && 'data' in categoriesData && categoriesData.success
+  //     ? categoriesData.data
+  //     : []
+
+  // const createPostMutation = useCreatePost()
+
+  // Cleanup preview URLs on unmount
+  useEffect(() => {
+    return () => {
+      previewUrls.forEach((url) => URL.revokeObjectURL(url))
+    }
+  }, [previewUrls])
+
+  const handleImageUpload = (event) => {
+    const files = event.target.files
+    if (files) {
+      let fileArr = Array.from(files)
+      if (selectedImages.length > 0) {
+        fileArr = [...selectedImages, ...fileArr].slice(0, 6)
+      } else {
+        fileArr = fileArr.slice(0, 6)
       }
-      reader.readAsDataURL(file)
+      previewUrls.forEach((url) => URL.revokeObjectURL(url))
+      setSelectedImages(fileArr)
+      setPreviewUrls(fileArr.map((file) => URL.createObjectURL(file)))
+      if (fileInputRef.current) fileInputRef.current.value = ''
+    }
+  }
+
+  const handleRemoveImage = (idx) => {
+    setSelectedImages((prev) => {
+      URL.revokeObjectURL(previewUrls[idx])
+      const newArr = prev.filter((_, i) => i !== idx)
+      previewUrls.forEach((url, i) => {
+        if (i !== idx) URL.revokeObjectURL(url)
+      })
+      setPreviewUrls(newArr.map((file) => URL.createObjectURL(file)))
+      return newArr
     })
   }
 
-  const handleRemoveImage = (index) => {
-    setSelectedImages((prev) => prev.filter((_, i) => i !== index))
+  // Drag & drop reorder
+  const dragItem = useRef(null)
+  const dragOverItem = useRef(null)
+
+  const handleDragStart = (idx) => {
+    dragItem.current = idx
   }
 
-  const handleSubmit = () => {
-    if (!selectedData) return alert('⚠️ Vui lòng chọn danh mục!')
-    if (Object.keys(formValues).length === 0)
-      return alert('⚠️ Vui lòng nhập thông tin chi tiết!')
-    if (selectedImages.length === 0)
-      return alert('⚠️ Vui lòng chọn ít nhất 1 ảnh!')
-
-    const postData = {
-      category: selectedData,
-      info: formValues,
-      images: selectedImages,
-      createdAt: new Date().toLocaleString(),
-      status: 'Đang hiển thị'
-    }
-    const existingPosts = JSON.parse(localStorage.getItem('posts')) || []
-    const postsArray = Array.isArray(existingPosts) ? existingPosts : []
-
-    postsArray.push(postData)
-    localStorage.setItem('posts', JSON.stringify(postsArray))
-
-    // Reset form
-    setSelectedData('')
-    setFormValues({})
-    setSelectedImages([])
-
-    alert('✅ Đăng tin thành công!')
-    navigate('/myposts') // 👉 chuyển sang trang MyPosts
+  const handleDragEnter = (idx) => {
+    dragOverItem.current = idx
   }
 
-  const [formValues, setFormValues] = useState({})
+  const handleDragEnd = () => {
+    const from = dragItem.current
+    const to = dragOverItem.current
+    if (from === null || to === null || from === to) return
 
-  const handleFormChange = (values) => {
-    setFormValues(values)
+    const newFiles = [...selectedImages]
+    const [file] = newFiles.splice(from, 1)
+    newFiles.splice(to, 0, file)
+
+    previewUrls.forEach((url) => URL.revokeObjectURL(url))
+    setSelectedImages(newFiles)
+    setPreviewUrls(newFiles.map((file) => URL.createObjectURL(file)))
+
+    dragItem.current = null
+    dragOverItem.current = null
   }
-  const [tounched, setTounched] = useState(false)
-  const handleBlur = () => {
-    setTounched(true)
-  } // khi roi khoi select
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    if (name === 'status') {
-      setStatus(value)
-    }
-    if (name === 'color') {
-      setColor(value)
+  const validateForm = () => {
+    const newErrors = {}
+
+    if (!title.trim()) {
+      newErrors.title = 'Vui lòng điền tiêu đề'
     }
 
-    if (name === 'capacity') {
-      setCapacity(value)
+    const wordCount = description.trim().split(/\s+/).length
+    if (!description.trim() || wordCount < 10) {
+      newErrors.description = 'Vui lòng nhập ít nhất 10 từ'
     }
-    if (name === 'brand') {
-      setBrand(value)
+
+    if (!category) {
+      newErrors.category = 'Vui lòng chọn danh mục'
+    }
+
+    if (!age) {
+      newErrors.age = 'Vui lòng chọn độ tuổi'
+    }
+
+    if (!size) {
+      newErrors.size = 'Vui lòng chọn kích cỡ'
+    }
+
+    if (!price.trim() || isNaN(Number(price))) {
+      newErrors.price = 'Vui lòng nhập giá bán hợp lệ'
+    }
+
+    if (!address || !address.province || !address.ward) {
+      newErrors.address = 'Vui lòng chọn đầy đủ địa chỉ'
+    }
+
+    if (selectedImages.length === 0) {
+      newErrors.images = 'Bạn cần đăng ít nhất 1 ảnh'
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleSubmit = async () => {
+    if (validateForm()) {
+      let uploadedImageUrls = []
+
+      if (selectedImages.length > 0) {
+        setIsUploading(true)
+        const uploadPromises = selectedImages.map((file) =>
+          uploadFileToCloudinary(file, 'image')
+        )
+
+        try {
+          const results = await Promise.all(uploadPromises)
+          for (const res of results) {
+            if (res.success && res.data && res.data.secure_url) {
+              uploadedImageUrls.push(res.data.secure_url)
+            } else {
+              setIsUploading(false)
+              setErrors((prev) => ({
+                ...prev,
+                images: 'Có ảnh không upload được, hãy thử lại.'
+              }))
+              return
+            }
+          }
+        } catch (error) {
+          setIsUploading(false)
+          toast.error('Lỗi upload ảnh, vui lòng thử lại')
+          return
+        }
+      }
+
+      const payload = {
+        title,
+        description,
+        price: Number(price),
+        age,
+        size,
+        address: address
+          ? `${address.specificAddress}, ${address.wardLabel}, ${address.provinceLabel}`
+          : '',
+        categoryId: category,
+        postImages: uploadedImageUrls.map((url) => ({ url }))
+      }
+
+      createPostMutation.mutate(payload, {
+        onSuccess: (res) => {
+          if (res.success) {
+            toast.success('Đăng tin thành công!')
+            navigate('/manage-post')
+          } else {
+            toast.error(res.message || 'Đăng tin thất bại')
+          }
+        },
+        onError: (err) => {
+          setIsUploading(false)
+          toast.error(err?.response?.data?.message || 'Có lỗi xảy ra')
+        }
+      })
     }
   }
-  const [status, setStatus] = useState('')
-  const [brand, setBrand] = useState('')
-  const [color, setColor] = useState('')
-  const [capacity, setCapacity] = useState('')
-  const [selectedData, setSelectedData] = useState('')
-  const dispatch = useDispatch()
-  const user = useSelector((state) => state.user.user)
-  const [showDanhMuc, setShowDanhMuc] = useState(false)
-  const localtion = useLocation()
 
-  // const handleChangeImage = (event) => {
-  //     const file = event.target.files[0];
-  //     if (file) {
-  //         // Xử lý file ảnh ở đây
-  //         console.log("Selected file:", file);
-  //     }
-  // }
+  const handleCancel = () => {
+    navigate(-1)
+  }
+
   return (
-    <div className='min-h-screen  bg-gray-50 relative overflow-hidden'>
-      {/* Navbar */}
-      <Navbar></Navbar>
-      {/* Nội dung chính */}
-      <div className='p-6 pt-20 transition-all duration-300'>
-        <div className='max-w-4xl mx-auto bg-white rounded-2xl shadow-md px-4 py-6 flex flex-col md:flex-row gap-6'>
-          {/* Khối hình ảnh */}
-          <div className='flex-1 text-center'>
-            <h5 className='text-lg font-semibold text-gray-800'>
-              Hình ảnh và Video sản phẩm
-            </h5>
-            <p className='text-sm text-gray-600'>
-              Xem thêm{' '}
-              <a href='#' className='text-blue-600 hover:underline'>
-                Quy định đăng tin của SecondHandShop
-              </a>
-            </p>
+    <div className='min-h-screen bg-gray-100 py-6'>
+      <div className='container mx-auto max-w-4xl px-4'>
+        <div className='bg-white p-4 rounded-lg shadow-sm'>
+          <div className='grid grid-cols-1 lg:grid-cols-[1fr_1.3fr] gap-10'>
+            {/* Image Upload Section */}
+            <div className='space-y-3'>
+              <h3 className='text-lg font-semibold mb-10'>
+                Hình ảnh và Video sản phẩm
+              </h3>
+              <p className='text-sm text-gray-600'>
+                Xem thêm{' '}
+                <a href='#' className='text-blue-600 hover:underline'>
+                  Quy định đăng tin của SecondHandShop
+                </a>
+              </p>
 
-            {/* <div className="bg-white p-6">
-                            <button className="btn relative bg-gray-100 btn-dash w-3xs h-50 border-amber-400 cursor-not-allowed hover:bg-gray-100 border-dashed">
-                                <Camera size={64} className="text-yellow-200" />
-                                <input type="file" disabled={!selectedData} onChange={handleChangeImage} accept="image/png, image/jpeg" className="file-input absolute file-input-ghost w-full h-full opacity-0" />
-                            </button>
-                        </div> */}
-            <div className='bg-white p-6'>
-              {/* Nút chọn ảnh */}
-              {/* <button className="btn relative bg-gray-100 btn-dash w-3xs h-50 border-amber-400 cursor-not-allowed hover:bg-gray-100 border-dashed">
-                                <Camera size={64} className="text-yellow-400 mx-auto" />
-                                <input
-                                    type="file"
-                                    multiple
-                                    disabled={!selectedData}
-                                    onChange={handleChangeImage}
-                                    accept="image/png, image/jpeg"
-                                    className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
-                                />
-                            </button> */}
-              {selectedImages.length === 0 ? (
-                <button className='btn relative bg-gray-100 btn-dash w-3xs h-50 border-amber-400 cursor-not-allowed hover:bg-gray-100 border-dashed'>
-                  <Camera size={64} className='text-yellow-200' />
-                  <input
-                    type='file'
-                    multiple
-                    disabled={!selectedData}
-                    onChange={handleChangeImage}
-                    accept='image/png, image/jpeg'
-                    className='file-input absolute file-input-ghost w-full h-full opacity-0'
-                  />
-                </button>
-              ) : (
-                <div className='flex flex-wrap gap-4 mt-4 justify-center'>
-                  {selectedImages.map((img, index) => (
+              <div>
+                {previewUrls.length === 0 ? (
+                  <div
+                    className='relative border-2 border-dashed border-orange-300 rounded-lg p-4 bg-gray-50 w-[300px] cursor-pointer hover:bg-gray-100 transition'
+                    onClick={() => fileInputRef.current?.click()}
+                  >
                     <div
-                      key={index}
-                      className='relative w-28 h-28 border rounded-xl overflow-hidden shadow-md'
+                      className='absolute right-2 top-1 flex items-center gap-1 select-none'
+                      style={{ zIndex: 2 }}
                     >
-                      <img
-                        src={img}
-                        alt={`preview-${index}`}
-                        className='w-full h-full object-cover'
-                      />
-                      <button
-                        onClick={() => handleRemoveImage(index)}
-                        className='absolute top-1 right-1 bg-black bg-opacity-60 text-white rounded-full w-5 h-5 flex items-center justify-center text-sm hover:bg-red-600'
-                      >
-                        ×
-                      </button>
+                      <Info className='w-3 h-3 text-blue-500' />
+                      <span className='text-xs text-blue-500 font-normal leading-none'>
+                        Hình ảnh hợp lệ
+                      </span>
                     </div>
-                  ))}
-                  <div className='relative w-28 h-28 border-2 border-dashed border-amber-400 flex items-center justify-center rounded-xl cursor-pointer hover:bg-gray-50'>
-                    <span className='text-4xl text-amber-400 font-light'>
-                      +
-                    </span>
-                    <input
-                      type='file'
-                      multiple
-                      onChange={handleChangeImage}
-                      accept='image/png, image/jpeg'
-                      className='absolute inset-0 w-full h-full opacity-0 cursor-pointer'
-                    />
+                    <div className='flex flex-col items-center space-y-3 justify-center h-full'>
+                      <div className='w-20 h-20 border-2 border-dashed border-orange-300 rounded-lg flex items-center justify-center'>
+                        <Camera className='w-8 h-8 text-orange-400' />
+                      </div>
+                      <p className='text-gray-600 text-sm text-center'>
+                        ĐĂNG TỪ 01 ĐẾN 06 HÌNH
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <div className='flex flex-wrap gap-3'>
+                      {previewUrls.map((url, idx) => (
+                        <div
+                          key={idx}
+                          className='relative w-32 h-24 rounded overflow-hidden border border-orange-300 bg-white flex items-center justify-center'
+                          draggable
+                          onDragStart={() => handleDragStart(idx)}
+                          onDragEnter={() => handleDragEnter(idx)}
+                          onDragEnd={handleDragEnd}
+                          onDragOver={(e) => e.preventDefault()}
+                        >
+                          <img
+                            src={url}
+                            alt={`preview-${idx}`}
+                            className='object-cover w-full h-full'
+                          />
+                          <button
+                            type='button'
+                            className='absolute top-1 right-1 bg-black bg-opacity-60 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 transition'
+                            onClick={() => handleRemoveImage(idx)}
+                            tabIndex={-1}
+                          >
+                            ×
+                          </button>
+                          {idx === 0 && (
+                            <span className='absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white text-xs text-center py-1'>
+                              Hình bìa
+                            </span>
+                          )}
+                        </div>
+                      ))}
+                      {previewUrls.length < 6 && (
+                        <div
+                          className='w-32 h-24 border-2 border-dashed border-orange-300 rounded flex items-center justify-center cursor-pointer bg-gray-50 hover:bg-gray-100 transition'
+                          onClick={() => fileInputRef.current?.click()}
+                        >
+                          <span className='text-3xl text-orange-400 font-bold'>
+                            +
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <p className='text-xs text-gray-500 mt-2'>
+                      Nhấn và giữ để di chuyển hình ảnh
+                    </p>
+                  </div>
+                )}
+                <input
+                  ref={fileInputRef}
+                  type='file'
+                  multiple
+                  accept='image/*'
+                  onChange={handleImageUpload}
+                  className='hidden'
+                  id='file-upload'
+                />
+              </div>
+            </div>
+
+            {/* Form Section */}
+            <div className='space-y-4 -ml-4'>
+              {errors.images && (
+                <div className='mb-2'>
+                  <div className='alert alert-error'>
+                    <svg
+                      className='stroke-current shrink-0 h-6 w-6'
+                      fill='none'
+                      viewBox='0 0 24 24'
+                    >
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        strokeWidth='2'
+                        d='M10 14l-2-2m0 0l-2-2m2 2l2-2m-2 2l-2 2m8-2l2 2m0 0l2 2m-2-2l-2-2m2 2l2 2M9 19H5a2 2 0 01-2-2V7a2 2 0 012-2h4m0 0h8a2 2 0 012 2v10a2 2 0 01-2 2h-8m-4-2h.01M9 15h.01'
+                      />
+                    </svg>
+                    <span>{errors.images}</span>
                   </div>
                 </div>
               )}
 
-              {/* Hiển thị ảnh đã chọn */}
-              {/* <div className="flex flex-wrap gap-4 mt-4 justify-center">
-                                {selectedImages.map((img, index) => (
-                                    <div key={index} className="relative w-28 h-28 border rounded-xl overflow-hidden shadow-md">
-                                        <img
-                                            src={img}
-                                            alt={`preview-${index}`}
-                                            className="w-full h-full object-cover"
-                                        />
-                                        <button
-                                            onClick={() => handleRemoveImage(index)}
-                                            className="absolute top-1 right-1 bg-black bg-opacity-60 text-white rounded-full w-5 h-5 flex items-center justify-center text-sm hover:bg-red-600"
-                                        >
-                                            ×
-                                        </button>
-                                    </div>
-                                ))}
-                            </div> */}
-            </div>
-          </div>
-
-          {/* Khối danh mục */}
-          <div className='flex-1'>
-            <input
-              type='text'
-              placeholder='Danh Mục Tin Đăng'
-              className='border ml-2 p-2 w-full mt-2 rounded-md'
-              onClick={() => setShowDanhMuc(true)}
-              value={selectedData}
-              readOnly
-            />
-
-            {!selectedData ? (
-              <div className='flex justify-end mt-4'>
-                <img
-                  className='w-60 bg-transparent rounded-xl'
-                  src={GShopping}
-                  alt='shopping'
-                />
-              </div>
-            ) : (
-              <div className='flex gap-2 flex-col items-center w-full  h-full mt-4 p-2'>
-                <h1 className='font-bold text-lg'>Thông tin chi tiết</h1>
-
-                <FormInfo
-                  selectedChild={selectedData}
-                  onFormChange={handleFormChange}
-                />
-                <button
-                  onClick={handleSubmit}
-                  className='mt-6 bg-yellow-400 text-white font-semibold px-4 py-2 rounded-lg hover:bg-yellow-500 w-full'
-                >
-                  Đăng tin
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* Popup chọn danh mục */}
-          {showDanhMuc && (
-            <>
-              <div className='fixed inset-0 flex justify-center items-center z-50 bg-black/30 backdrop-blur-sm'>
-                <div className='bg-white w-96 rounded-2xl shadow-xl p-6 relative'>
-                  <button
-                    className='absolute top-2 right-3 text-xl font-bold hover:text-red-500'
-                    onClick={() => setShowDanhMuc(false)}
+              {/* Category */}
+              <div>
+                <label className='form-control w-full'>
+                  <div className='label'>
+                    <span className='label-text font-medium'>
+                      Danh Mục Tin Đăng *
+                    </span>
+                  </div>
+                  <select
+                    id='category'
+                    className={`select select-bordered w-full ${
+                      errors.category ? 'select-error' : ''
+                    }`}
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    disabled={isCategoriesLoading || !categories}
                   >
-                    ×
-                  </button>
-                  <h2 className='text-2xl font-semibold mb-3 text-gray-800'>
-                    Đăng tin mới
-                  </h2>
+                    <option value=''>
+                      {isCategoriesLoading ? 'Đang tải...' : 'Chọn danh mục'}
+                    </option>
+                    {categories &&
+                      categories.length > 0 &&
+                      categories.map((cat) => (
+                        <option key={cat.id} value={cat.id}>
+                          {cat.name}
+                        </option>
+                      ))}
+                  </select>
+                  {errors.category && (
+                    <div className='label'>
+                      <span className='label-text-alt text-error'>
+                        {errors.category}
+                      </span>
+                    </div>
+                  )}
+                </label>
+              </div>
 
-                  <form className='space-y-3'>
-                    <p className='text-medium'>CHỌN DANH MỤC</p>
-                    <DanhMuc
-                      selectedData={selectedData}
-                      setSelectedData={setSelectedData}
-                      setShowDanhMuc={setShowDanhMuc}
-                      hideTitle
-                      className='m-2'
-                      itemClass='p-1'
-                    />
-                  </form>
-                  <button onClick={handleSubmit}></button>
+              {/* Detailed Info */}
+              <div>
+                <h3 className='text-lg font-semibold mb-4 mt-8'>
+                  Thông tin chi tiết
+                </h3>
+                <div className='space-y-3'>
+                  {/* Age */}
+                  <div>
+                    <label className='form-control w-full'>
+                      <div className='label'>
+                        <span className='label-text text-sm'>Độ tuổi *</span>
+                      </div>
+                      <select
+                        id='age'
+                        className={`select select-bordered w-full ${
+                          errors.age ? 'select-error' : ''
+                        }`}
+                        value={age}
+                        onChange={(e) => setAge(e.target.value)}
+                      >
+                        <option value=''>Chọn độ tuổi</option>
+                        {Object.entries(ageMap).map(([key, value]) => (
+                          <option key={key} value={key}>
+                            {value}
+                          </option>
+                        ))}
+                      </select>
+                      {errors.age && (
+                        <div className='label'>
+                          <span className='label-text-alt text-error'>
+                            {errors.age}
+                          </span>
+                        </div>
+                      )}
+                    </label>
+                  </div>
+
+                  {/* Size */}
+                  <div>
+                    <label className='form-control w-full'>
+                      <div className='label'>
+                        <span className='label-text text-sm'>
+                          Kích cỡ thú cưng *
+                        </span>
+                      </div>
+                      <select
+                        id='size'
+                        className={`select select-bordered w-full ${
+                          errors.size ? 'select-error' : ''
+                        }`}
+                        value={size}
+                        onChange={(e) => setSize(e.target.value)}
+                      >
+                        <option value=''>Chọn kích cỡ</option>
+                        {Object.entries(sizeMap).map(([key, value]) => (
+                          <option key={key} value={key}>
+                            {value}
+                          </option>
+                        ))}
+                      </select>
+                      {errors.size && (
+                        <div className='label'>
+                          <span className='label-text-alt text-error'>
+                            {errors.size}
+                          </span>
+                        </div>
+                      )}
+                    </label>
+                  </div>
+
+                  {/* Price */}
+                  <div>
+                    <label className='form-control w-full'>
+                      <div className='label'>
+                        <span className='label-text text-sm'>Giá bán *</span>
+                      </div>
+                      <input
+                        id='price'
+                        type='number'
+                        placeholder='Nhập giá bán'
+                        className={`input input-bordered w-full ${
+                          errors.price ? 'input-error' : ''
+                        }`}
+                        value={price}
+                        onChange={(e) => setPrice(e.target.value)}
+                      />
+                      {errors.price && (
+                        <div className='label'>
+                          <span className='label-text-alt text-error'>
+                            {errors.price}
+                          </span>
+                        </div>
+                      )}
+                    </label>
+                  </div>
                 </div>
               </div>
-            </>
-          )}
+
+              {/* Title & Description */}
+              <div>
+                <h3 className='text-lg font-semibold mb-4 mt-12'>
+                  Tiêu đề tin đăng và Mô tả chi tiết
+                </h3>
+                <div className='space-y-4'>
+                  <div>
+                    <label className='form-control w-full'>
+                      <div className='label'>
+                        <span className='label-text text-sm'>
+                          Tiêu đề tin đăng *
+                        </span>
+                        <span className='label-text-alt text-xs text-gray-500'>
+                          {title.length}/50 kí tự
+                        </span>
+                      </div>
+                      <input
+                        id='post-title'
+                        type='text'
+                        placeholder='Nhập tiêu đề...'
+                        className={`input input-bordered w-full ${
+                          errors.title ? 'input-error' : ''
+                        }`}
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        maxLength={50}
+                      />
+                      {errors.title && (
+                        <div className='label'>
+                          <span className='label-text-alt text-error'>
+                            {errors.title}
+                          </span>
+                        </div>
+                      )}
+                    </label>
+                  </div>
+
+                  <div>
+                    <label className='form-control w-full'>
+                      <div className='label'>
+                        <span className='label-text text-sm'>
+                          Mô tả chi tiết *
+                        </span>
+                        <span className='label-text-alt text-xs text-gray-500'>
+                          {description.length}/1500 kí tự
+                        </span>
+                      </div>
+                      <textarea
+                        id='detailed-description'
+                        placeholder='Mô tả chi tiết về sản phẩm của bạn...'
+                        className={`textarea textarea-bordered w-full h-24 ${
+                          errors.description ? 'textarea-error' : ''
+                        }`}
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        maxLength={1500}
+                      />
+                      {errors.description && (
+                        <div className='label'>
+                          <span className='label-text-alt text-error'>
+                            {errors.description}
+                          </span>
+                        </div>
+                      )}
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Address */}
+              <div>
+                <h3 className='text-lg font-semibold mb-4 pb-2 mt-12'>
+                  Thông tin người bán
+                </h3>
+                <div className='space-y-3'>
+                  <label className='form-control w-full'>
+                    <div className='label'>
+                      <span className='label-text text-sm'>Khu vực *</span>
+                    </div>
+                    <div
+                      className={`input input-bordered flex items-center cursor-pointer ${
+                        errors.address ? 'input-error' : ''
+                      }`}
+                      onClick={() => setShowAddressDialog(true)}
+                    >
+                      {address ? (
+                        <p className='text-sm'>
+                          {address.specificAddress}
+                          {address.specificAddress ? ', ' : ''}
+                          {address.wardLabel}
+                          {address.wardLabel ? ', ' : ''}
+                          {address.provinceLabel}
+                        </p>
+                      ) : (
+                        <p className='text-gray-400 text-sm'>Chọn địa chỉ</p>
+                      )}
+                    </div>
+                    {errors.address && (
+                      <div className='label'>
+                        <span className='label-text-alt text-error'>
+                          {errors.address}
+                        </span>
+                      </div>
+                    )}
+                  </label>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className='flex justify-end gap-3 pt-4'>
+                <button className='btn btn-outline' onClick={handleCancel}>
+                  Hủy
+                </button>
+                <button
+                  className='btn btn-warning'
+                  onClick={handleSubmit}
+                  disabled={createPostMutation.isPending || isUploading}
+                >
+                  {createPostMutation.isPending || isUploading ? (
+                    <>
+                      <span className='loading loading-spinner loading-sm'></span>
+                      Đang xử lý...
+                    </>
+                  ) : (
+                    'Đăng tin'
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
+
+        {/* Address Dialog */}
+        {showAddressDialog && (
+          <AddressDialog
+            isOpen={showAddressDialog}
+            onClose={() => setShowAddressDialog(false)}
+            onSave={(value) => {
+              setAddress(value)
+              setShowAddressDialog(false)
+            }}
+            initialAddress={address || undefined}
+          />
+        )}
       </div>
     </div>
   )
 }
-
-export default PostNews

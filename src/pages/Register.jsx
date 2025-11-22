@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import TypeIt from 'typeit-react'
-
+import bgImage from '../assets/login_sale.jpg'
 import { jwtDecode } from 'jwt-decode'
 import { useDispatch, useSelector } from 'react-redux'
 // import { setUser } from "../redux/userSlice";
@@ -24,7 +24,7 @@ const CLIENT_ID =
   '162064755179-5e475s56kn539ntm1fh6ndmgsvu1k8c8.apps.googleusercontent.com'
 // ... bên trong component Login()
 
-function Login() {
+function Register() {
   const currentUser = useSelector(selectCurrentUser)
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -157,6 +157,16 @@ function Login() {
         <form className='flex flex-col gap-4'>
           <div>
             <label className='block text-gray-900 mb-1 font-medium'>
+              Họ và Tên
+            </label>
+            <input
+              type='text'
+              className='w-full px-3 py-2 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-yellow-500 outline-none'
+              placeholder='Nhập họ và tên...'
+            />
+          </div>
+          <div>
+            <label className='block text-gray-900 mb-1 font-medium'>
               Số điện thoại
             </label>
             <input
@@ -222,12 +232,12 @@ function Login() {
 
         {/* Đăng ký */}
         <p className='text-center text-sm text-gray-900 mt-5'>
-          Chưa có tài khoản?{' '}
+          Đã có tài khoản?{' '}
           <a
-            href='/register'
+            href='/login'
             className='text-blue-800 font-medium hover:underline'
           >
-            Đăng ký ngay
+            Đăng nhập ngay
           </a>
         </p>
       </div>
@@ -235,4 +245,4 @@ function Login() {
   )
 }
 
-export default Login
+export default Register

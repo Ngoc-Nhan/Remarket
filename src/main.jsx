@@ -7,6 +7,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google' // 🟢 thêm dòng n�
 import { store } from './redux/store'
 import App from './App'
 import './App.css'
+import { Toaster } from 'sonner'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -15,6 +16,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         {/* 🟢 Bọc App trong GoogleOAuthProvider */}
         <GoogleOAuthProvider clientId='YOUR_GOOGLE_CLIENT_ID'>
           <App />
+          <Toaster />
         </GoogleOAuthProvider>
       </BrowserRouter>
     </Provider>

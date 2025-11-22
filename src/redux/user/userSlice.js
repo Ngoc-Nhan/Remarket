@@ -22,7 +22,7 @@ export const loginAPI = createAsyncThunk('user/loginAPI', async (data) => {
   return request.data
 })
 const initialState = {
-  currentUser: null
+  user: JSON.parse(localStorage.getItem('user')) || null
 }
 
 export const logoutUserAPI = createAsyncThunk(
@@ -59,7 +59,14 @@ export const userSlice = createSlice({
   // khoi tao gia tri slice trong redex
   initialState,
   // Nơi xử lý dữ liệu đồng bộ  ở reducers
-  reducers: {},
+  reducers: {
+    setUser: (state, action) => {
+      state.user = action.payload
+    },
+    logout: (state) => {
+      state.user = null
+    }
+  },
   // extraReducer nơi xử lý dữ liệu bất đồng bộ
   extraReducers: (builder) => {
     builder.addCase(loginAPI.fulfilled, (state, action) => {
@@ -88,3 +95,4 @@ export const selectCurrentUser = (state) => {
   return state.user.currentUser
 }
 export const userReducer = userSlice.reducer
+export const { setUser, logout } = userSlice.actions

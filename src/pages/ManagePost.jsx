@@ -23,11 +23,11 @@ export default function ManagePosts() {
   const [posts, setPosts] = useState([
     {
       id: 1,
-      title: "Bán laptop Dell XPS 13",
+      title: " Laptop Dell XPS 13",
       price: "18.000.000₫",
       date: "20/10/2025",
       status: "Đang hiển thị",
-      image: "https://picsum.photos/120/90?random=1",
+      image: "/laptop.jpg",
       category: "Laptop",
     },
     {
@@ -36,7 +36,7 @@ export default function ManagePosts() {
       price: "21.500.000₫",
       date: "18/10/2025",
       status: "Chờ duyệt",
-      image: "https://picsum.photos/120/90?random=2",
+      image: "/iphone.jpg",
       category: "Điện thoại",
     },
     {
@@ -45,7 +45,7 @@ export default function ManagePosts() {
       price: "3.000.000₫",
       date: "15/10/2025",
       status: "Tin nháp",
-      image: "https://picsum.photos/120/90?random=3",
+      image: "/gheni.jpg",
       category: "Nội thất",
     },
   ]);
@@ -66,10 +66,10 @@ export default function ManagePosts() {
       prev.map((p) =>
         p.id === id
           ? {
-              ...p,
-              status:
-                p.status === "Đang hiển thị" ? "Tin nháp" : "Đang hiển thị",
-            }
+            ...p,
+            status:
+              p.status === "Đang hiển thị" ? "Tin nháp" : "Đang hiển thị",
+          }
           : p
       )
     );
@@ -131,11 +131,10 @@ export default function ManagePosts() {
           <button
             key={tab}
             onClick={() => setStatusFilter(tab)}
-            className={`px-4 py-2 rounded-full transition ${
-              statusFilter === tab
-                ? "bg-yellow-500 text-white"
-                : "text-yellow-700 hover:bg-yellow-100"
-            }`}
+            className={`px-4 py-2 rounded-full transition ${statusFilter === tab
+              ? "bg-yellow-500 text-white"
+              : "text-yellow-700 hover:bg-yellow-100"
+              }`}
           >
             {tab}
           </button>
@@ -181,15 +180,14 @@ export default function ManagePosts() {
 
             <div className="flex flex-col sm:flex-row items-center gap-2 mt-3 sm:mt-0">
               <span
-                className={`text-sm px-3 py-1 rounded-full ${
-                  post.status === "Đang hiển thị"
-                    ? "bg-green-100 text-green-700"
-                    : post.status === "Chờ duyệt"
+                className={`text-sm px-3 py-1 rounded-full ${post.status === "Đang hiển thị"
+                  ? "bg-green-100 text-green-700"
+                  : post.status === "Chờ duyệt"
                     ? "bg-yellow-100 text-yellow-700"
                     : post.status === "Tin nháp"
-                    ? "bg-gray-100 text-gray-700"
-                    : "bg-red-100 text-red-700"
-                }`}
+                      ? "bg-gray-100 text-gray-700"
+                      : "bg-red-100 text-red-700"
+                  }`}
               >
                 {post.status}
               </span>

@@ -1,8 +1,8 @@
 import { Menu } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Navigate, Outlet } from 'react-router-dom'
 import { Sidebar } from '@/components/commons/admin'
-import { Button } from '@/components/ui'
+import { Button } from '@/components/ui/button'
 import { useAuthStore } from '../stores/useAuthStore'
 
 export default function AdminLayout() {
@@ -25,9 +25,9 @@ export default function AdminLayout() {
     )
   }
 
-  if (user?.role !== 'ADMIN') {
-    return <Navigate to='/' replace />
-  }
+  // if (user?.role !== 'ADMIN') {
+  //   return <Navigate to='/' replace />
+  // }
 
   // Main layout
   return (

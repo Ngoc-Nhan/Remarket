@@ -49,6 +49,7 @@ export default function PostNews() {
 
   // Cleanup preview URLs on unmount
   useEffect(() => {
+    console.log('console.log(previewUrls)', previewUrls)
     return () => {
       previewUrls.forEach((url) => URL.revokeObjectURL(url))
     }

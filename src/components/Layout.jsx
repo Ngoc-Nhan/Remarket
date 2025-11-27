@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react'
 import Navbar from './Navbar/Navbar'
 import { Navigate, Outlet } from 'react-router-dom'
 import { useAuthStore } from '../stores/useAuthStore'
+import { useLocation } from 'react-router-dom'
 
 function Layout() {
   const { accessToken, user, loading, refresh, fetchMe } = useAuthStore()
+  const location = useLocation()
   const [starting, setStarting] = useState(true)
   const init = async () => {
     if (!accessToken) {
@@ -25,7 +27,7 @@ function Layout() {
     )
   }
   if (!accessToken) {
-    return <Navigate to='/login' replace={true} />
+    return location.pathname != '/' && <Navigate to='/login' replace={true} />
   }
   return (
     <div className='scroll-smooth '>

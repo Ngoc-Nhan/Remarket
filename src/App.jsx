@@ -13,6 +13,11 @@ import ChatPage from './pages/ChatPage'
 import FavouritesPage from './pages/FavouritesPage'
 import Auth from './pages/Auth'
 import AdminLayout from './components/AdminLayout'
+import AdminDashboard from './pages/admin/Dashboard'
+import UserManagement from './pages/admin/UserManagement'
+import PostManagement from './pages/admin/PostManagement'
+import CategoryManagement from './pages/admin/CategoryManagement'
+import SearchResults from './pages/SearchResults'
 
 function App() {
   return (
@@ -20,7 +25,7 @@ function App() {
       {/* Layout chung có Navbar */}
       <Route element={<Layout />}>
         <Route path='/' element={<Home />} />
-        <Route path='/home' element={<Home />} />
+        <Route path='/search' element={<SearchResults />} />
         <Route path='/PostNews' element={<PostNews />} />
         <Route path='/ManagePost' element={<ManagePost />} />
         <Route path='/ListSp' element={<ListSp />} />
@@ -36,6 +41,8 @@ function App() {
         <Route path='users-management' element={<UserManagement />} />
         <Route path='posts-management' element={<PostManagement />} />
         <Route path='categories-management' element={<CategoryManagement />} />
+        {/* <Route path='orders-management' element={<OrderManagement />} />
+        <Route path='reviews-management' element={<ReviewManagement />} /> */}
       </Route>
       {/* Trang không dùng Navbar */}
       <Route path='/login' element={<Auth />} />

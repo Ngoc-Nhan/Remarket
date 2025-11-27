@@ -5,27 +5,28 @@ import { cn } from '@/lib/utils'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import React from 'react'
+import { useAuthStore } from '../../stores/useAuthStore'
 export function NotificationDropdown({
   notificationRef,
   onClose,
   notifications
 }) {
   const navigate = useNavigate()
-  const isAuthenticated = false
+  const { user } = useAuthStore()
 
   // const readNotificationMutation = useReadNotificationMutation()
 
-  // const handleClickNotification = async (notification) => {
-  //   try {
-  //     if (!notification.isRead) {
-  //       // await readNotificationMutation.mutateAsync(notification.id)
-  //     }
-  //     onClose()
-  //     navigate(notification.url)
-  //   } catch (error) {
-  //     toast.error('Đã có lỗi xảy ra khi đọc thông báo.')
-  //   }
-  // }
+  const handleClickNotification = async (notification) => {
+    try {
+      if (!notification.isRead) {
+        // await readNotificationMutation.mutateAsync(notification.id)
+      }
+      onClose()
+      navigate(notification.url)
+    } catch (error) {
+      toast.error('Đã có lỗi xảy ra khi đọc thông báo.')
+    }
+  }
 
   return (
     <div
@@ -37,11 +38,11 @@ export function NotificationDropdown({
       </div>
       <div
         className={cn(
-          'flex flex-col overflow-y-auto min-h-[450px] max-h-[450px] p-2',
-          !isAuthenticated ? 'justify-center' : 'justify-start'
+          'flex flex-col overflow-y-auto min-h-[100px] h-fit max-h-[450px] p-2',
+          !user ? 'justify-center' : 'justify-start'
         )}
       >
-        {!isAuthenticated ? (
+        {!user ? (
           <div className='text-center text-gray-400 text-sm py-8'>
             Vui lòng{' '}
             <span

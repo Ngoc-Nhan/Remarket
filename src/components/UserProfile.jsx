@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
 import { useNavigate } from 'react-router-dom'
-import { app } from '../firebaseConfig'
-// GIẢ ĐỊNH: Các hàm này nằm trong file ../Data/VNProvinces
 import {
   fetchProvinces,
   fetchProvinceDetail,
   fetchWards
 } from '../Data/VNProvinces'
-import { useDispatch } from 'react-redux'
-import { logout } from '../redux/user/userSlice'
+import { useAuthStore } from '../stores/useAuthStore'
 
 function UserProfile() {
-  const [user, setUser] = useState(null)
+  const { user, fetchMe } = useAuthStore()
+  const [userEdit, setUserEdit] = useState(null)
   const [isEditing, setIsEditing] = useState(false)
   const [showSecurity, setShowSecurity] = useState(false)
   const [showAddressModal, setShowAddressModal] = useState(false)
@@ -30,7 +27,7 @@ function UserProfile() {
     displayName: '',
     phone: '',
     birthday: '',
-    nickname: '',
+    username: '',
     gender: '',
 
     // Thông tin địa chỉ
@@ -45,9 +42,6 @@ function UserProfile() {
   })
 
   const navigate = useNavigate()
-
-  const [showToast, setShowToast] = useState(false) // State quản lý hiển thị Toast
-  const dispatch = useDispatch()
   // ----------------------------------------------------
   // --- LOGIC FETCH DỮ LIỆU ĐỊA LÝ ---
   // ----------------------------------------------------
@@ -140,32 +134,27 @@ function UserProfile() {
     }
   }, [isEditing, showSecurity, showAddressModal])
 
-  // ✅ Lấy thông tin người dùng Firebase và khởi tạo formData
   useEffect(() => {
-    const auth = getAuth(app)
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser)
-        // Khởi tạo formData với giá trị từ Firebase (nếu có)
+    const initializeData = () => {
+      if (user) {
+        setUserEdit(user)
+        // Khởi tạo formData với giá trị từ user store
         setFormData((prev) => ({
           ...prev,
-          // Đảm bảo displayName được khởi tạo đúng, nếu null/undefined thì là ""
-          displayName: currentUser.displayName ?? '',
-          phone: currentUser.phoneNumber ?? ''
-          // TODO: Load thông tin khác từ database (birthday, nickname, address, ...)
+          displayName: user.displayName ?? '',
+          phone: user.phoneNumber ?? '',
+          address: user.address ?? ''
+          // TODO: Load thông tin khác từ database nếu cần
         }))
       } else {
-        setUser(null)
+        setUserEdit(null)
       }
       setLoading(false)
-    })
-    return () => unsubscribe()
-  }, [])
+    }
+    initializeData()
+  }, [user]) // Chỉ chạy lại khi đối tượng `user` thay đổi
 
   const handleLogout = async () => {
-    const auth = getAuth(app)
-    await signOut(auth)
-    dispatch(logout())
     navigate('/login')
   }
 
@@ -316,7 +305,10 @@ function UserProfile() {
           {/* ... (Phần Avatar và Tên không thay đổi) ... */}
           <div className='relative'>
             <img
-              src={getAvatar()}
+              src={
+                user?.avatar ||
+                'https://i.pinimg.com/736x/7d/0c/6b/7d0c6bc79cfa39153751c56433141483.jpg'
+              }
               alt='User Avatar'
               className='rounded-full w-28 h-28 object-cover border-2 border-[#e6d9c8]'
               referrerPolicy='no-referrer'
@@ -359,7 +351,7 @@ function UserProfile() {
             </p>
             <p>
               <span className='font-medium'>🔒 Bảo mật:</span>{' '}
-              {user?.providerData[0]?.providerId === 'google.com'
+              {user?.providerData?.providerId === 'google.com'
                 ? 'Đã xác thực Google'
                 : 'Chưa xác thực'}
             </p>

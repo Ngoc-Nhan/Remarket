@@ -1,42 +1,47 @@
 import React from 'react'
 import { ChevronDown } from 'lucide-react'
-import { useSelector } from 'react-redux'
 import { getAuth, signOut } from 'firebase/auth'
 import { app } from '../../firebaseConfig'
+import { useAuthStore } from '../../stores/useAuthStore'
+import { useNavigate } from 'react-router-dom'
 
-export default function UserMenu({ navigate, dispatch, logout }) {
-  const user = useSelector((state) => state.user.user)
+export default function UserMenu() {
+  const { user, signOut } = useAuthStore()
+  const navigate = useNavigate()
   const handleLoginClick = () => {
-    const width = 420
-    const height = 680
-
-    const dualScreenLeft =
-      window.screenLeft !== undefined ? window.screenLeft : window.screenX
-    const dualScreenTop =
-      window.screenTop !== undefined ? window.screenTop : window.screenY
-
-    const screenWidth =
-      window.innerWidth || document.documentElement.clientWidth || screen.width
-    const screenHeight =
-      window.innerHeight ||
-      document.documentElement.clientHeight ||
-      screen.height
-
-    const left = Math.round(dualScreenLeft + (screenWidth - width) / 2)
-    const top = Math.round(dualScreenTop + (screenHeight - height) / 2)
-
-    window.open(
-      '/login?popup=1',
-      '_blank',
-      `noopener,noreferrer,toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=${width},height=${height},left=${left},top=${top}`
-    )
+    navigate('/login')
   }
+  // const handleLoginClick = () => {
+  //   const width = 420
+  //   const height = 680
+
+  //   const dualScreenLeft =
+  //     window.screenLeft !== undefined ? window.screenLeft : window.screenX
+  //   const dualScreenTop =
+  //     window.screenTop !== undefined ? window.screenTop : window.screenY
+
+  //   const screenWidth =
+  //     window.innerWidth || document.documentElement.clientWidth || screen.width
+  //   const screenHeight =
+  //     window.innerHeight ||
+  //     document.documentElement.clientHeight ||
+  //     screen.height
+
+  //   const left = Math.round(dualScreenLeft + (screenWidth - width) / 2)
+  //   const top = Math.round(dualScreenTop + (screenHeight - height) / 2)
+
+  //   window.open(
+  //     '/login?popup=1',
+  //     '_blank',
+  //     `noopener,noreferrer,toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=${width},height=${height},left=${left},top=${top}`
+  //   )
+  // }
+  console.log(user)
 
   const handleLogout = async () => {
-    const auth = getAuth(app)
-    await signOut(auth)
-    dispatch(logout())
-    navigate('/login')
+    await signOut()
+    // dispatch(logout())
+    // navigate('/login')
   }
   return (
     <div className='flex items-center gap-2 ml-3'>
@@ -65,7 +70,7 @@ export default function UserMenu({ navigate, dispatch, logout }) {
             <div
               tabIndex={0}
               role='button'
-              className='btn btn-lg m-1 justify-center pl-1 items-center gap-2 rounded-full text-xl'
+              className='btn btn-lg m-1 justify-center px-1 md:pl-1 items-center gap-2 rounded-full text-xl'
             >
               <img
                 alt='User Avatar'
@@ -74,10 +79,10 @@ export default function UserMenu({ navigate, dispatch, logout }) {
                 src={
                   user?.photoURL ||
                   user?.picture ||
-                  'https://via.placeholder.com/40'
+                  'https://i.pinimg.com/736x/7d/0c/6b/7d0c6bc79cfa39153751c56433141483.jpg'
                 }
               />
-              <ChevronDown className='hidden sm:block w-5 h-5' />
+              <ChevronDown className='hidden md:block w-5 h-5' />
             </div>
 
             <div className='dropdown-content  z-50'>

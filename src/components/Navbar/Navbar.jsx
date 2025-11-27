@@ -1,23 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
-// import { logoutUserAPI } from '@redux/user/userSlice'
-
-import MenuDropdown from './MenuDropdown'
-import RegionSelector from './RegionSelector'
 import UserMenu from './UserMenu'
 import {
   Bell,
   ChevronDown,
   ChevronRight,
-  Dog,
-  Handbag,
   Heart,
   List,
   MessagesSquare
 } from 'lucide-react'
-import { googleLogout } from '@react-oauth/google'
-import { selectCurrentUser } from '../../redux/user/userSlice'
 import logo from '../../assets/logo.png'
 import { NavbarSearch } from './NavbarSearch'
 import { NotificationDropdown } from './NotificationDropDown'
@@ -172,9 +163,7 @@ export default function Navbar() {
     }
   }, [isHomePage])
 
-  const currentUser = useSelector(selectCurrentUser)
   const navigate = useNavigate()
-  const dispatch = useDispatch()
   const [isLoading, setIsLoading] = React.useState(false)
   const [hasNextPage, setHasNextPage] = React.useState(false)
   const [isFetchingNextPage, setIsFetchingNextPage] = React.useState(false)
@@ -192,7 +181,7 @@ export default function Navbar() {
   }
 
   const logout = () => {
-    dispatch(googleLogout())
+    // dispatch(())
     navigate('/')
   }
   return (
@@ -200,11 +189,11 @@ export default function Navbar() {
       className={`navbar max-h-[10vh] top-0 z-50  py-[12px] px-3 sm:px-6 min-w-[320px] m-auto flex justify-between items-center transition-all duration-300 ${
         isHomePage && !isScrolled
           ? 'bg-transparent shadow-none absolute'
-          : 'bg-[#fce277] shadow-md sticky'
+          : 'bg-yellow-400 shadow-md sticky'
       }`}
     >
       {/* Logo */}
-      <div className='flex items-center gap-[1rem] flex-shrink-0'>
+      <div className='flex items-center  gap-[1rem] flex-shrink-0'>
         {/* Categories */}
         <div className='relative inline-flex items-center gap-2 sm:gap-3 cursor-pointer group w-full sm:w-auto'>
           <List className='w-4 h-4 sm:w-5 sm:h-5 group-hover:opacity-70' />
@@ -273,7 +262,7 @@ export default function Navbar() {
             </div>
           </div>
         </div>
-        <Link className='btn btn-ghost border-0 text-xl' to='/'>
+        <Link className='btn md:flex hidden btn-ghost border-0 text-xl' to='/'>
           <img src={logo} className='w-18' alt='logo' />
         </Link>
         {/* {isPostNewsPage ? null : (
@@ -286,9 +275,9 @@ export default function Navbar() {
 
       <NavbarSearch isHomePage={isHomePage} isScrolled={isScrolled} />
       {/* Icon Section */}
-      <div className='flex items-center gap-3 sm:gap-6 text-xs sm:text-sm flex-wrap justify-center sm:justify-end'>
+      <div className='flex items-center gap-3 sm:gap-6 text-xs sm:text-sm  justify-center sm:justify-end'>
         <div
-          className='relative order-4 sm:order-none'
+          className='relative sm:flex hidden order-4 sm:order-none'
           onClick={handleToggleNotification}
         >
           <div className='relative'>
@@ -308,21 +297,22 @@ export default function Navbar() {
             />
           )}
         </div>
-        <div className='relative' onClick={() => navigate('/messages')}>
+        <div
+          className='relative md:block hidden'
+          onClick={() => navigate('/messages')}
+        >
           <MessagesSquare className='w-5 h-5 sm:w-7 sm:h-7 order-1 sm:order-none hover:opacity-70 cursor-pointer' />
         </div>
-        <div className='relative' onClick={() => navigate('/favorites')}>
+        <div
+          className='relative md:block hidden'
+          onClick={() => navigate('/favorites')}
+        >
           <Heart className='w-5 h-5 sm:w-7 sm:h-7 order-1 sm:order-none  hover:opacity-70 cursor-pointer' />
         </div>
 
         {/* User Menu */}
 
-        <UserMenu
-          user={currentUser}
-          navigate={navigate}
-          dispatch={dispatch}
-          logout={logout}
-        ></UserMenu>
+        <UserMenu />
       </div>
     </div>
   )

@@ -131,11 +131,11 @@ export function NavbarSearch({ isHomePage, isScrolled }) {
       <div className='flex items-center bg-white rounded-sm p-1 sm:p-2'>
         <div
           onClick={(e) => handleToggleProvinceChooser(e, true)}
-          className='flex items-center justify-between w-[90px] cursor-pointer sm:w-[120px] pr-1 sm:pr-2'
+          className='flex items-center justify-between w-[60px] cursor-pointer sm:w-[90px] pr-1 sm:pr-2 '
         >
           <span className='inline-flex items-center gap-1 text-xs sm:text-sm font-normal line-clamp-1'>
             <MapPin className='text-app-primary w-4 h-4 sm:w-5 sm:h-5' />
-            <span className='line-clamp-1'>
+            <span className='line-clamp-1 sm:flex hidden'>
               {selectedProvince || 'Chọn vị trí'}
             </span>
           </span>
@@ -160,12 +160,12 @@ export function NavbarSearch({ isHomePage, isScrolled }) {
                 setIsSearchFocused(false)
               }
             }}
-            placeholder='Tìm kiếm sản phẩm trên Chợ Tốt'
+            placeholder='Tìm kiếm sản phẩm'
             className='outline-none text-xs sm:text-sm w-full'
           />
 
           {isSearchFocused && filteredRecentSearches.length > 0 && (
-            <div className='absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-50 max-h-64 overflow-y-auto divide-y divide-gray-100'>
+            <div className='absolute min-w-2xs top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-50 max-h-64 overflow-y-auto divide-y divide-gray-100'>
               <div className='flex items-center justify-between px-4 py-2 bg-gray-50 rounded-t-md'>
                 <div className='flex items-center gap-1 text-sm text-gray-600'>
                   <Clock className='w-4 h-4' />

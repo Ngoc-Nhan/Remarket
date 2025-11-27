@@ -8,19 +8,6 @@ import { Camera, Info } from 'lucide-react'
 import { toast } from 'sonner'
 import React from 'react'
 import AddressDialog from '../components/dialog/AddressDialog'
-const ageMap = {
-  PUPPY: 'Chó con',
-  YOUNG_DOG: 'Chó nhỏ',
-  ADULT_DOG: 'Chó trưởng thành',
-  OTHER: 'Khác'
-}
-
-const sizeMap = {
-  MINI: 'Mini',
-  SMALL: 'Nhỏ',
-  MEDIUM: 'Vừa',
-  LARGE: 'Lớn'
-}
 
 export default function PostNews() {
   const navigate = useNavigate()
@@ -140,14 +127,6 @@ export default function PostNews() {
       newErrors.category = 'Vui lòng chọn danh mục'
     }
 
-    if (!age) {
-      newErrors.age = 'Vui lòng chọn độ tuổi'
-    }
-
-    if (!size) {
-      newErrors.size = 'Vui lòng chọn kích cỡ'
-    }
-
     if (!price.trim() || isNaN(Number(price))) {
       newErrors.price = 'Vui lòng nhập giá bán hợp lệ'
     }
@@ -231,9 +210,9 @@ export default function PostNews() {
 
   return (
     <div className='min-h-screen bg-gray-100 py-6'>
-      <div className='container mx-auto max-w-4xl px-4'>
+      <div className='container  mx-auto max-w-7xl px-4'>
         <div className='bg-white p-4 rounded-lg shadow-sm'>
-          <div className='grid grid-cols-1 lg:grid-cols-[1fr_1.3fr] gap-10'>
+          <div className='grid grid-cols-1 lg:grid-cols-[1fr_1.3fr] px-5 gap-5'>
             {/* Image Upload Section */}
             <div className='space-y-3'>
               <h3 className='text-lg font-semibold mb-10'>

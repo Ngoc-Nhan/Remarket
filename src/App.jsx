@@ -1,8 +1,6 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
-import Login from './pages/Login'
-import Register from './pages/Register'
 import PostNews from './pages/PostNews'
 import ManagePost from './pages/ManagePost'
 import ListSp from './components/ListSp'
@@ -14,6 +12,7 @@ import ProductPage from './pages/ProductPage'
 import ChatPage from './pages/ChatPage'
 import FavouritesPage from './pages/FavouritesPage'
 import Auth from './pages/Auth'
+import AdminLayout from './components/AdminLayout'
 
 function App() {
   return (
@@ -32,6 +31,12 @@ function App() {
         <Route path='/favorites' element={<FavouritesPage />}></Route>
       </Route>
 
+      <Route path='/admin' element={<AdminLayout />}>
+        <Route path='dashboard' element={<AdminDashboard />} />
+        <Route path='users-management' element={<UserManagement />} />
+        <Route path='posts-management' element={<PostManagement />} />
+        <Route path='categories-management' element={<CategoryManagement />} />
+      </Route>
       {/* Trang không dùng Navbar */}
       <Route path='/login' element={<Auth />} />
       <Route path='/register' element={<Auth />} />

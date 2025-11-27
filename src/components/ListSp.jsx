@@ -1,23 +1,25 @@
 import React from 'react'
 
-import moment from 'moment'
-import 'moment/locale/vi' // để hiển thị tiếng Việt
+import dayjs from 'dayjs'
+import 'dayjs/locale/vi'
+// import 'moment/locale/vi' // not needed unless you use moment elsewhere
 import { useNavigate } from 'react-router-dom'
 import { Heart, MapPin, MoreHorizontal } from 'lucide-react'
-import { getRelativeTime } from '../helper'
+// import { getRelativeTime } from '../helper'
 import { toast } from 'sonner'
-moment.locale('vi')
-
+import relativeTime from 'dayjs/plugin/relativeTime'
+dayjs.extend(relativeTime)
+dayjs.locale('vi')
 function ListSp({ filteredProducts }) {
-  if (!filteredProducts) {
-    return <p>Không có sản phẩm nào để hiển thị.</p>
-  }
   const navigate = useNavigate()
 
   const [archivedIds, setArchivedIds] = React.useState([])
 
-  const toggleArchive = (id, e) => {
-    e.stopPropagation() // tránh click nút cũng kích hoạt navigate của parent
+  if (!filteredProducts) {
+    return <p>Không có sản phẩm nào để hiển thị.</p>
+  }
+
+  const toggleArchive = (id) => {
     setArchivedIds((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
     )
@@ -25,33 +27,39 @@ function ListSp({ filteredProducts }) {
 
   return (
     <>
-      <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-10'>
+      <div className='grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-5 md:gap-4'>
         {filteredProducts.length > 0 ? (
           filteredProducts.map((product) => (
             <div
               key={product.id}
-              className=' rounded-xl  '
+              className='rounded-xl h-full bg-white p-2 flex flex-col shadow-sm w-full cursor-pointer'
               onClick={() => navigate(`/product/${product.id}`)}
             >
-              <div className='relative group overflow-hidden'>
-                <img
-                  src={product.image || '/placeholder.svg'}
-                  alt={product.title}
-                  className='w-full h-50 object-cover mb-3 transition-transform duration-200 group-hover:scale-105 rounded-md z-0'
-                />
+              <div className='relative flex-col max-w-full flex items-center justify-center overflow-hidden rounded-xl group w-full'>
+                <div className='w-full aspect-w-4 flex items-center justify-center aspect-h-3 overflow-hidden rounded-md mb-3'>
+                  <img
+                    src={
+                      Array.isArray(product.image)
+                        ? product.image[0]
+                        : product.image || '/placeholder.svg'
+                    }
+                    alt={product.title || 'Product image'}
+                    className='w-auto h-52 object-cover transition-transform duration-200 group-hover:scale-105 bg-center z-0'
+                  />
+                </div>
                 <button
-                  className={`btn btn-circle absolute top-2 right-2 h-8 w-8 rounded-full border-0 z-10 ${
+                  className={`btn btn-circle absolute top-2 right-2 h-8 w-8 rounded-xl border-0 z-0 ${
                     archivedIds.includes(product.id)
-                      ? 'bg-red-500 hover:bg-red-600'
+                      ? 'bg-red-500/70 hover:bg-red-600/70'
                       : 'bg-black/20 hover:bg-black/40'
                   }`}
                   onClick={(e) => {
-                    // e.stopPropagation()
+                    e.stopPropagation()
                     // if (false) {
                     //   navigate('/login')
                     //   return
                     // }
-                    toggleArchive(product.id, e)
+                    toggleArchive(product.id)
                     toast.success('Cập nhật trạng thái lưu trữ thành công!')
                     // toggleArchiveMutation.mutate(post.id, {
                     // 	onSuccess: (res) => {
@@ -82,16 +90,23 @@ function ListSp({ filteredProducts }) {
                     }`}
                   />
                 </button>
+                <button className='btn btn-circle absolute top-2 left-2 h-8 w-fit rounded-xl border-0 z-0 bg-amber-400/30 text-md text-black/70 p-2 flex  items-center justify-center text-nowrap'>
+                  🌟 Tin tiêu biểu
+                </button>
 
-                <div className='absolute bottom-0 left-0 right-0 flex justify-between items-end bg-black/15  from-black/70 to-transparent px-2 py-1 rounded-b-md z-10 pointer-events-none transition-colors duration-200 group-hover:bg-gradient-to-t'>
-                  <span className='text-white text-xs font-semibold'>
-                    {getRelativeTime(product.postedAt)}
+                <div className='absolute bottom-0 left-0 right-0 flex justify-between items-end to-transparent px-2 py-1 rounded-b-md z-0 pointer-events-none'>
+                  <span className='text-white p-1 px-2 bg-black/40 rounded-xl text-md font-semibold'>
+                    {dayjs(product.postedAt).fromNow()}
                   </span>
-                  <span className='flex items-center gap-1 text-white text-xs font-semibold'>
-                    {product.image.length}
+                  <span className='flex p-1 px-2 rounded-xl text-md bg-black/40 items-center gap-1 text-white text-md font-semibold'>
+                    {Array.isArray(product.image)
+                      ? product.image.length
+                      : product.image
+                      ? 1
+                      : 0}
                     <svg
                       xmlns='http://www.w3.org/2000/svg'
-                      className='w-4 h-4'
+                      className='w-5 h-5'
                       fill='currentColor'
                       viewBox='0 0 20 20'
                     >
@@ -100,21 +115,26 @@ function ListSp({ filteredProducts }) {
                   </span>
                 </div>
               </div>
-              <div className='pt-2'>
-                <h3 className='font-normal text-sm line-clamp-2 mb-1 text-black leading-tight'>
-                  {product.title}
-                </h3>
-                <div className='flex items-center justify-between mb-1'>
-                  <span className='font-bold text-red-600 text-sm'>
-                    {product.price.toLocaleString()} đ
-                  </span>
-                  <button className='h-5 w-5 p-0'>
-                    <MoreHorizontal className='h-4 w-4 text-gray-400' />
-                  </button>
+              <div className='pt-2 flex flex-col flex-1 h-full justify-between'>
+                <div>
+                  <h3 className='font-light text-xl pt-2 px-2  line-clamp-2 mb-1 text-black leading-tight'>
+                    {product.title}
+                  </h3>
+                  <div className='flex items-center justify-between mb-1'>
+                    <span className=' px-2 font-bold text-red-600 text-xl'>
+                      {product.price.toLocaleString()} đ
+                    </span>
+                  </div>
                 </div>
-                <div className='flex items-center text-xs text-gray-500'>
-                  <MapPin className='h-3 w-3 mr-1 flex-shrink-0' />
-                  <span className='truncate'>{product.location}</span>
+                <div className='flex items-end text-xs text-gray-500 justify-between px-2 mb-2'>
+                  <span className='truncate items-center justify-center flex flex-row text-lg'>
+                    {' '}
+                    <MapPin className='h-7 w-7 mr-1 shrink-0' />
+                    {product.location}
+                  </span>
+                  <button className='h-7 w-7 p-0 relative flex items-center justify-center rounded-full hover:bg-gray-200'>
+                    <MoreHorizontal className='h-7 w-7 text-gray-400' />
+                  </button>
                 </div>
               </div>
 
@@ -149,7 +169,7 @@ function ListSp({ filteredProducts }) {
           >
             {/* {(isLoading && postList.length === 0) || isLoadMore
                 ? 'Đang tải...' : */}
-            'Xem thêm'
+            Xem thêm
             {/* } */}
           </button>
         </div>

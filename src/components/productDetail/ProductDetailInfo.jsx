@@ -1,10 +1,8 @@
 // ...existing code...
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { addToCart } from '@redux/cart/cartSlice'
+
 
 export default function ProductDetailInfo({ product }) {
-  const dispatch = useDispatch()
   const [qty, setQty] = useState(1)
   const [added, setAdded] = useState(false)
 
@@ -27,7 +25,6 @@ export default function ProductDetailInfo({ product }) {
       : p
 
   function handleAdd() {
-    dispatch(addToCart({ product, quantity: qty }))
     setAdded(true)
     setTimeout(() => setAdded(false), 1500)
   }

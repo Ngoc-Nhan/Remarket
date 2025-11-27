@@ -1,8 +1,8 @@
 import axios from 'axios'
-import { toast } from 'react-toastify'
+import { toast } from 'sonner'
 import { interceptorLoadingElements } from './fomatters'
-import { refreshTokenAPI } from '@/apis'
-import { logoutUserAPI } from '@redux/user/userSlice'
+// import { refreshTokenAPI } from '@/apis'
+import { useAuthStore } from '../stores/useAuthStore'
 
 /**
 * Thông thể import { store } from '~/redux/store' theo cách thông thường ở đây
@@ -12,11 +12,6 @@ nhu file authorizeAxios hiện tại
 hàm injectStore ngay lập tức để gán biển mainStore vào biển axiosReduxStore cục bộ trong file này.
 * https://redux.js.org/faq/code-structure#how-can-i-use-the-redux-store-in-non-component-files
 */
-let axiosReduxStore
-
-export const injectStore = (mainStore) => {
-  axiosReduxStore = mainStore
-}
 
 // Khởi tạo một đối tượng Axios
 // (authorizedAxiosInstance) mục đích để custom và
@@ -55,7 +50,6 @@ authorizedAxiosInstance.interceptors.request.use(
 // https://www.thedutchlab.com/en/insights/using-axios-interceptors-for-refreshing-your-api-token
 
 let refreshTokenPromise = null
-
 // interceptor response : can thiệp vào giữa cái respone nhận về
 authorizedAxiosInstance.interceptors.response.use(
   (response) => {
@@ -74,9 +68,11 @@ authorizedAxiosInstance.interceptors.response.use(
     interceptorLoadingElements(false)
 
     // Xử lý refresh token tự động
-    // Trường hợp 1: Nếu như nhận mã 401 từ be, thì gọi api đăng xuất nhe
-    if (error.response?.status === 401)
-      axiosReduxStore.dispatch(logoutUserAPI(false))
+    // Trường hợp 1: Nếu như nhận mã 401 từ BE, gọi action `signOut` từ store.
+    if (error.response?.status === 401) {
+      // Gọi action `signOut` từ store mà không cần dùng hook
+      useAuthStore.getState().signOut()
+    }
     // trường hợp 2: Nếu như nhận 410 từ be, thì sẽ gọi api refresh token để làm mới access token
     // Đầu tiên lấy được các request api đang bị lỗi thông qua error.config
     const originalRequests = error.config
@@ -84,20 +80,23 @@ authorizedAxiosInstance.interceptors.response.use(
       '🚀 ~ authorizeAxios.js:66 ~ authorizedAxiosInstance.interceptors.response.use ~ originalRequests:',
       originalRequests
     )
+    // Tạm thời vô hiệu hóa logic refresh token để tập trung vào câu hỏi
     if (error.response?.status === 410 && originalRequests) {
       // Bước 1: Kiểm tra xem nếu chưa có refréh_tokenPromise thì
       // thực hiện việc gọi api refresh_token đồng Thời
       // gán vào cho cái refreshTokenPromise
       // originalRequests._retry = true
       if (!refreshTokenPromise) {
-        refreshTokenPromise = refreshTokenAPI()
+        refreshTokenPromise = useAuthStore
+          .getState()
+          .refresh()
           .then((data) => {
             // đồng thời accessToken đã nằm trong httpOnly cookie (xử lý từ be)
             return data?.accessToken
           })
           .catch((_error) => {
             // Nếu nhận bất kỳ lỗi nào từ api refresh token thì cứ logout luôn
-            axiosReduxStore.dispatch(logoutUserAPI(false))
+            useAuthStore.getState().signOut() // Thay thế logic Redux cũ
             return Promise.reject(_error)
           })
           .finally(() => {

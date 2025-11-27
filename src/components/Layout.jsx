@@ -1,40 +1,34 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Navbar from './Navbar/Navbar'
-import { Outlet } from 'react-router-dom'
+import { Navigate, Outlet } from 'react-router-dom'
+import { useAuthStore } from '../stores/useAuthStore'
 
 function Layout() {
-  // useEffect(() => {
-  //   const bc = new BroadcastChannel('auth_channel')
-
-  //   bc.onmessage = (event) => {
-  //     if (event.data === 'logged_in') {
-  //       refetch()
-  //     }
-  //   }
-
-  //   return () => bc.close()
-  // }, [])
-  // const [isAppLoading, setisAppLoading] = React.useState(true)
-  // if (isAppLoading) {
-  //   return (
-  //     <div
-  //       style={{
-  //         position: 'fixed',
-  //         top: '50%',
-  //         left: '50%',
-  //         transform: 'translate(-50%, -50%)'
-  //       }}
-  //     >
-  //       <div className='p-10 animate-spin rounded-full border-2 border-t-0 border-amber-300' />
-  //     </div>
-  //   )
-  // }
-  // if (user?.role === 'ADMIN') {
-  //   return <Navigate to={'/admin/dashboard'} replace />
-  // }
-
+  const { accessToken, user, loading, refresh, fetchMe } = useAuthStore()
+  const [starting, setStarting] = useState(true)
+  const init = async () => {
+    if (!accessToken) {
+      await refresh()
+    }
+    setStarting(false)
+  }
+  useEffect(() => {
+    init()
+  }, [])
+  if (starting || loading) {
+    return (
+      <div className='flex h-screen items-center justify-center text-red text-lg '>
+        {' '}
+        <span className='border-2 border-b-0 animate-spin duration-300 border-amber-800 infinity '></span>{' '}
+        Đang tải trang nè...
+      </div>
+    )
+  }
+  if (!accessToken) {
+    return <Navigate to='/login' replace={true} />
+  }
   return (
-    <div className=''>
+    <div className='scroll-smooth '>
       <Navbar />
       <Outlet /> {/* render các trang con ở đây */}
     </div>

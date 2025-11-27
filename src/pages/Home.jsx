@@ -1,13 +1,18 @@
-import React, { useState, useEffect } from 'react'
-
-import { useDispatch } from 'react-redux'
-
-import Navbar from '../components/Navbar/Navbar'
-import { products } from '../constant/constant'
+import React, { useState } from 'react'
+import { categoriesMock, products } from '../constant/constant'
 import ListSp from '../components/ListSp'
-import banner from '../assets/home/bg-banner.png'
-import banner2 from '../assets/banner/2.png'
-import banner3 from '../assets/banner/1.png'
+import banner3 from '../assets/herobanner.png'
+import { HeroSearch } from '../components/HeroSearch'
+import {
+  Zap,
+  Bike,
+  Sofa,
+  Microwave,
+  Shirt,
+  Baby,
+  Hammer,
+  Grid2x2
+} from 'lucide-react'
 function Home() {
   // const [searchTerm, setSearchTerm] = useState('')
   // const filteredProducts = products.filter(
@@ -30,26 +35,29 @@ function Home() {
   const [postList, setPostList] = useState(products)
   const [isLoading, setIsLoading] = useState(false)
   return (
-    <div className='h-full w-full bg-amber-100'>
+    <div className='h-full w-full bg-[#f9fafb]'>
       {/* Header banner với thanh tìm kiếm */}
-      <div className='bg-yellow-400/40 py-6 md:py-10 relative  overflow-hidden'>
+      <div
+        className='relative bg-gradient-to-r from-yellow-600 to-yellow-400 py-12 md:py-16 overflow-visible'
+        style={{
+          backgroundImage: `url(${banner3})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}
+      >
         {/* Hình ảnh trang trí (mô phỏng theo hình ảnh) */}
-        <div
-          className='absolute inset-0 w-full h-full bg-cover bg-center z-0'
-          style={{
-            backgroundImage: `url(${banner3})`
-          }}
-        ></div>
-        <div className='container relative z-10 mx-auto px-4 pt-[4rem] '>
+        <div className='absolute w-full h-full inset-0 bg-gradient-to-r from-yellow-600/60 to-yellow-400/60' />
+        {/* <div className='absolute inset-0 bg-gradient-to-r from-hero-from/90 to-hero-to/90' /> */}
+        <div className='container relative z-10 mx-auto  pt-[4rem] '>
           <h1 className='text-xl md:text-3xl lg:text-4xl font-bold text-center text-black mb-4'>
             Cùng khám phá đồ tốt nhanh nào!
           </h1>
 
           {/* Thanh tìm kiếm và bộ lọc */}
-          <div className='flex justify-center'>
-            <div className='bg-white p-2 rounded-xl shadow-lg flex flex-col md:flex-row w-full max-w-4xl'>
-              {/* Menu Danh mục (Dropdown) */}
-              <div className='px-4 py-2 md:border-r border-gray-300 flex items-center justify-between cursor-pointer hover:bg-gray-100 rounded-lg md:rounded-l-lg md:rounded-r-none mb-2 md:mb-0'>
+          <div className='flex justify-center '>
+            {/* <div className='bg-white p-2 rounded-xl shadow-lg flex flex-col md:flex-row w-full max-w-7xl'> */}
+            {/* Menu Danh mục (Dropdown) */}
+            {/* <div className='px-4 py-2 md:border-r border-gray-300 flex items-center justify-between cursor-pointer hover:bg-gray-100 rounded-lg md:rounded-l-lg md:rounded-r-none mb-2 md:mb-0'>
                 <span className='font-medium text-gray-700'>Danh mục</span>
                 <svg
                   className='w-4 h-4 ml-2 text-gray-500'
@@ -65,17 +73,18 @@ function Home() {
                     d='M19 9l-7 7-7-7'
                   ></path>
                 </svg>
-              </div>
+              </div> */}
 
-              {/* Ô tìm kiếm sản phẩm */}
-              <input
+            {/* Ô tìm kiếm sản phẩm */}
+            {/* <input
                 type='text'
                 placeholder='Tìm sản phẩm...'
                 className='flex-grow px-4 md:py-6 py-2 text-gray-800 focus:outline-none rounded-lg mb-2 md:mb-0 md:rounded-none'
-              />
+              /> */}
+            <HeroSearch />
 
-              {/* Vị trí */}
-              <div className='px-4 py-2 md:border-l border-gray-300 flex items-center justify-between cursor-pointer hover:bg-gray-100 rounded-lg md:rounded-none mb-2 md:mb-0'>
+            {/* Vị trí */}
+            {/* <div className='px-4 py-2 md:border-l border-gray-300 flex items-center justify-between cursor-pointer hover:bg-gray-100 rounded-lg md:rounded-none mb-2 md:mb-0'>
                 <span className='font-medium text-gray-700'>
                   Tp Hồ Chí Minh
                 </span>
@@ -93,182 +102,65 @@ function Home() {
                     d='M19 9l-7 7-7-7'
                   ></path>
                 </svg>
-              </div>
+              </div> */}
 
-              {/* Nút Tìm kiếm */}
-              <button className='bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded-lg md:rounded-r-lg md:rounded-l-none w-full md:w-auto md:ml-2'>
+            {/* Nút Tìm kiếm */}
+            {/* <button className='bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded-lg md:rounded-r-lg md:rounded-l-none w-full md:w-auto md:ml-2'>
                 Tìm kiếm
-              </button>
-            </div>
-          </div>
-          {/* Thẻ Xin chào */}
-          <div className='container md:flex flex-col items-center jusstify-center hidden mx-auto px-4 mt-4'>
-            Tìm kiếm gần đây
-            <p className='text-gray-600 text-sm'>
-              <span className='mr-2'>◉</span>
-              <span className='font-bold'>Ip x</span>
-            </p>
+              </button> */}
+            {/* </div> */}
           </div>
         </div>
       </div>
 
       {/* Khu vực danh mục chính */}
-      <div className='container mx-auto px-4 mt-6'>
-        <div className='bg-white p-6 rounded-2xl shadow-xl'>
-          <div className='grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-9 gap-4 text-center'>
-            {/* Item: Bất động sản */}
-            <div className='flex flex-col items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer'>
-              <img src='' alt='Bất động sản' className='w-12 h-12 mb-1' />
-              <span className='text-xs font-semibold text-red-600'>
-                NHÀ TỐT
-              </span>
-              <p className='text-sm text-gray-700'>Bất động sản</p>
-            </div>
+      <div className='container mx-auto px-10  mt-6'>
+        <div className='bg-white pb-6 rounded-2xl shadow-sm '>
+          <div className='flex justify-center gap-7 py-6 items-center flex-wrap'>
+            {categoriesMock.map((category) => {
+              const Icon = category.icon
+              return (
+                category.parentId === null &&
+                Icon && (
+                  <div
+                    key={category.id ?? category.slug}
+                    className='flex flex-col w-30 h-30 items-center p-2 hover:scale-105 transition duration-200 cursor-pointer rounded-2xl'
+                  >
+                    {/* <div className='w-30 h-30 mx-2  mb-1 flex flex-col items-center justify-center bg-gray-100 rounded-lg'> */}
+                    <div
+                      className={`${category.color}  flex flex-col items-center justify-centerp-3 rounded-lg  transition-colors relative`}
+                    >
+                      <Icon className='w-20 h-20' />
+                      <span className='text-lg text-center text-gray-700 mt-2'>
+                        {category.name}
+                      </span>
+                    </div>
 
-            {/* Item: Xe cộ */}
-            <div className='flex flex-col items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer'>
-              <img src='' alt='Xe cộ' className='w-12 h-12 mb-1' />
-              <span className='text-xs font-semibold text-green-600'>
-                CHỢ TỐT XE
-              </span>
-              <p className='text-sm text-gray-700'>Xe cộ</p>
-            </div>
-
-            {/* Item: Thú cưng */}
-            <div className='flex flex-col items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer'>
-              <img src='' alt='Thú cưng' className='w-12 h-12 mb-1' />
-              <p className='text-sm text-gray-700 mt-2'>Thú cưng</p>
-            </div>
-
-            {/* Item: Đồ gia dụng, nội thất, cây cảnh */}
-            <div className='flex flex-col items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer'>
-              <img src='' alt='Đồ gia dụng' className='w-12 h-12 mb-1' />
-              <p className='text-sm text-gray-700 mt-2'>
-                Đồ gia dụng, nội thất, cây cảnh
-              </p>
-            </div>
-
-            {/* Item: Giải trí, Thể thao, Sở thích */}
-            <div className='flex flex-col items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer'>
-              <img src='' alt='Giải trí' className='w-12 h-12 mb-1' />
-              <p className='text-sm text-gray-700 mt-2'>
-                Giải trí, Thể thao, Sở thích
-              </p>
-            </div>
-
-            {/* Item: Mẹ và bé */}
-            <div className='flex flex-col items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer'>
-              <img src='' alt='Mẹ và bé' className='w-12 h-12 mb-1' />
-              <p className='text-sm text-gray-700 mt-2'>Mẹ và bé</p>
-            </div>
-
-            {/* Item: Dịch vụ, Du lịch */}
-            <div className='flex flex-col items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer'>
-              <img src='' alt='Dịch vụ Du lịch' className='w-12 h-12 mb-1' />
-              <p className='text-sm text-gray-700 mt-2'>Dịch vụ, Du lịch</p>
-            </div>
-
-            {/* Item: Cho tặng miễn phí */}
-            <div className='flex flex-col items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer'>
-              <img src='' alt='Cho tặng miễn phí' className='w-12 h-12 mb-1' />
-              <p className='text-sm text-gray-700 mt-2'>Cho tặng miễn phí</p>
-            </div>
-
-            {/* Hàng thứ hai */}
-
-            {/* Item: Việc làm */}
-            <div className='flex flex-col items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer'>
-              <img src='' alt='Việc làm' className='w-12 h-12 mb-1' />
-              <span className='text-xs font-semibold text-blue-600'>
-                VIỆC LÀM TỐT
-              </span>
-              <p className='text-sm text-gray-700'>Việc làm</p>
-            </div>
-
-            {/* Item: Đồ điện tử */}
-            <div className='flex flex-col items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer'>
-              <img src='' alt='Đồ điện tử' className='w-12 h-12 mb-1' />
-              <p className='text-sm text-gray-700 mt-2'>Đồ điện tử</p>
-            </div>
-
-            {/* Item: Tủ lạnh, máy lạnh, máy giặt */}
-            <div className='flex flex-col items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer'>
-              <img
-                src=''
-                alt='Tủ lạnh, máy lạnh, máy giặt'
-                className='w-12 h-12 mb-1'
-              />
-              <p className='text-sm text-gray-700 mt-2'>
-                Tủ lạnh, máy lạnh, máy giặt
-              </p>
-            </div>
-
-            {/* Item: Đồ dùng văn phòng, công nông nghiệp */}
-            <div className='flex flex-col items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer'>
-              <img src='' alt='Đồ dùng văn phòng' className='w-12 h-12 mb-1' />
-              <p className='text-sm text-gray-700 mt-2'>
-                Đồ dùng văn phòng, công nông nghiệp
-              </p>
-            </div>
-
-            {/* Item: Thời trang, Đồ dùng cá nhân */}
-            <div className='flex flex-col items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer'>
-              <img
-                src=''
-                alt='Thời trang, Đồ dùng cá nhân'
-                className='w-12 h-12 mb-1'
-              />
-              <p className='text-sm text-gray-700 mt-2'>
-                Thời trang, Đồ dùng cá nhân
-              </p>
-            </div>
-
-            {/* Item: Đồ ăn, thực phẩm và các loại khác */}
-            <div className='flex flex-col items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer'>
-              <img src='' alt='Đồ ăn, thực phẩm' className='w-12 h-12 mb-1' />
-              <p className='text-sm text-gray-700 mt-2'>
-                Đồ ăn, thực phẩm và các loại khác
-              </p>
-            </div>
-
-            {/* Item: Dịch vụ chăm sóc nhà cửa */}
-            <div className='flex flex-col items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer relative'>
-              <img
-                src=''
-                alt='Dịch vụ chăm sóc nhà cửa'
-                className='w-12 h-12 mb-1'
-              />
-              <span className='absolute top-0 right-0 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full'>
-                Mới
-              </span>
-              <p className='text-sm text-gray-700 mt-2'>
-                Dịch vụ chăm sóc nhà cửa
-              </p>
-            </div>
+                    {/* </div> */}
+                  </div>
+                )
+              )
+            })}
 
             {/* Item: Tất cả danh mục */}
-            <div className='flex flex-col items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer'>
-              <div className='w-12 h-12 mb-1 flex items-center justify-center bg-gray-100 rounded-lg'>
-                <div className='grid grid-cols-2 gap-1'>
-                  <div className='w-3 h-3 bg-gray-400 rounded-full'></div>
-                  <div className='w-3 h-3 bg-gray-400 rounded-full'></div>
-                  <div className='w-3 h-3 bg-gray-400 rounded-full'></div>
-                  <div className='w-3 h-3 bg-gray-400 rounded-full'></div>
-                </div>
+
+            <div className='flex flex-col w-30 h-30 items-center p-2 hover:scale-105 transition duration-200 cursor-pointer rounded-2xl'>
+              <div
+                className={`text-amber-400  flex flex-col items-center justify-centerp-3 rounded-lg  transition-colors relative`}
+              >
+                <Grid2x2 className='w-20 h-20' />
+                <span className='text-lg text-center text-gray-700 mt-2'>
+                  Tất cả danh mục
+                </span>
               </div>
-              <p className='text-sm text-gray-700 mt-2'>Tất cả danh mục</p>
             </div>
           </div>
         </div>
       </div>
       {/* Tabs */}
-      <div className='container mx-auto  pt-5  font-medium '>
+      <div className='container px-4 mx-auto  pt-5  font-medium '>
         <div className='tabs tabs-bordered'>
-          <div className='flex space-x-8'>
-            <button className='py-4 px-2 border-b-2 border-orange-500 text-orange-500 font-medium cursor-pointer'>
-              Dành cho bạn
-            </button>
-          </div>
+          <div className='flex space-x-8'></div>
           {/* <a
             className={`tab ${activeTab === 'latest' ? 'tab-active' : ''}`}
             onClick={() => setActiveTab('latest')}
@@ -284,9 +176,14 @@ function Home() {
         </div>
 
         {/* Nội dung Tab */}
-        <div className='mt-4 bg-white p-6 rounded-2xl '>
+        <div className=' mx-auto container px-6 rounded-2xl'>
+          <div className='flex relative'>
+            <div className='mb-7 px-2 border-b-2 border-orange-500 text-orange-500 text-xl font-medium cursor-pointer'>
+              Dành cho bạn
+            </div>
+          </div>
           {isLoading && postList.length === 0 ? (
-            <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4'>
+            <div className='grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-5 md:gap-4'>
               {Array.from({ length: 9 }).map((_, idx) => (
                 <div
                   key={idx}

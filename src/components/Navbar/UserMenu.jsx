@@ -77,7 +77,7 @@ export default function UserMenu() {
                 class='rounded-full w-10 h-10 object-cover border-2 border-[#e6d9c8]'
                 referrerpolicy='no-referrer'
                 src={
-                  user?.photoURL ||
+                  user?.avatar ||
                   user?.picture ||
                   'https://i.pinimg.com/736x/7d/0c/6b/7d0c6bc79cfa39153751c56433141483.jpg'
                 }

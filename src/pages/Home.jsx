@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
-import { categoriesMock, products } from '../constant/constant'
+import React, { useEffect, useState } from 'react'
+import { categoriesMock } from '../constant/constant'
+import { getAllListingsSimpleAPI } from '@/apis'
 import ListSp from '../components/ListSp'
 import banner3 from '../assets/herobanner.png'
 import { HeroSearch } from '../components/HeroSearch'
@@ -15,22 +16,7 @@ import {
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 function Home() {
-  // const [searchTerm, setSearchTerm] = useState('')
-  // const filteredProducts = products.filter(
-  //   (p) =>
-  //     p.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //     p.title.toLowerCase().includes(searchTerm.toLowerCase())
-  // )
   const [isExpanded, setIsExpanded] = useState(false)
-  // Hàm tính thời gian đăng
-
-  // const dispatch = useDispatch()
-
-  // ✅ Khi load lại trang, lấy user từ localStorage rồi set vào Redux
-  // useEffect(() => {
-  //   const savedUser = JSON.parse(localStorage.getItem('user'))
-  //   if (savedUser) dispatch(setUser(savedUser))
-  // }, [dispatch])
   const navigate = useNavigate()
   const handleClickDM = (id) => {
     const params = new URLSearchParams()
@@ -38,8 +24,25 @@ function Home() {
     navigate(`/search?${params.toString()}`)
   }
   const [activeTab, setActiveTab] = useState('forYou')
-  const [postList, setPostList] = useState(products)
+  const [postList, setPostList] = useState([])
   const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    const fetchListings = async () => {
+      setIsLoading(true)
+      try {
+        const listings = await getAllListingsSimpleAPI()
+        console.log(listings)
+        setPostList(listings)
+      } catch (error) {
+        console.error('Failed to fetch listings:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchListings()
+  }, [])
+
   return (
     <div className='h-full w-full bg-[#f9fafb]'>
       {/* Header banner với thanh tìm kiếm */}
@@ -126,8 +129,7 @@ function Home() {
             {categoriesMock.map((category) => {
               const Icon = category.icon
               return (
-                category.parentId === null &&
-                Icon && (
+                category && (
                   <div
                     key={category.id ?? category.slug}
                     className='flex flex-col w-30 h-30 items-center p-2 hover:scale-105 transition duration-200 cursor-pointer rounded-2xl'
@@ -206,7 +208,7 @@ function Home() {
           ) : postList.length === 0 ? (
             <p>Không có sản phẩm nào</p>
           ) : (
-            <ListSp filteredProducts={products} />
+            <ListSp filteredProducts={postList} />
           )}
         </div>
         <div className='bg-white mt-4 p-6  rounded-2xl'>

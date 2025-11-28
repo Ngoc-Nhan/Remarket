@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-const CLOUD_NAME = import.meta.env.VITE_CLOUD_NAME
-const UPLOAD_ASSET_NAME = import.meta.env.VITE_UPLOAD_ASSET_NAME
+const CLOUD_NAME = 'ddkkkq2pm'
+const UPLOAD_ASSET_NAME = 'Remarket'
 
 export const uploadFileToCloudinary = async (file, resourceType = 'image') => {
   const url = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${resourceType}/upload`

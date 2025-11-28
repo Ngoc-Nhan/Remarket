@@ -10,6 +10,7 @@ import React from 'react'
 import AddressDialog from '../components/dialog/AddressDialog'
 import { uploadFileToCloudinary } from '@/services/api/cloudinary'
 import { categoriesMock } from '@/constant/constant'
+import { createListingAPI } from '@/apis'
 
 export default function PostNews() {
   const navigate = useNavigate()
@@ -181,27 +182,28 @@ export default function PostNews() {
         title,
         description,
         price: Number(price),
-        address: address
+        location: address
           ? `${address.specificAddress}, ${address.wardLabel}, ${address.provinceLabel}`
           : '',
         categoryId: category,
-        postImages: uploadedImageUrls.map((url) => ({ url }))
+        images: uploadedImageUrls.map((url) => url)
       }
 
-      createPostMutation.mutate(payload, {
-        onSuccess: (res) => {
-          if (res.success) {
-            toast.success('Đăng tin thành công!')
-            navigate('/manage-post')
+      await createListingAPI(payload)
+        .then((res) => {
+          if (res._id) {
+            toast.success('Đăng tin thành công')
+            navigate('/ManagePost')
           } else {
-            toast.error(res.message || 'Đăng tin thất bại')
+            toast.error('Đăng tin thất bại')
           }
-        },
-        onError: (err) => {
+        })
+        .catch((err) => {
+          toast.error('Đăng tin thất bại')
+        })
+        .finally(() => {
           setIsUploading(false)
-          toast.error(err?.response?.data?.message || 'Có lỗi xảy ra')
-        }
-      })
+        })
     }
   }
 

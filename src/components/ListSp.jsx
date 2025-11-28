@@ -7,22 +7,47 @@ import { useNavigate } from 'react-router-dom'
 import { Heart, MapPin, MoreHorizontal } from 'lucide-react'
 // import { getRelativeTime } from '../helper'
 import { toast } from 'sonner'
+import { useAuthStore } from '@/stores/useAuthStore'
+import { addFavoriteAPI, removeFavoriteAPI } from '@/apis'
 import relativeTime from 'dayjs/plugin/relativeTime'
 dayjs.extend(relativeTime)
 dayjs.locale('vi')
 function ListSp({ filteredProducts }) {
   const navigate = useNavigate()
+  const { user: infoUs } = useAuthStore()
+  const isAuthenticated = !!infoUs
 
-  const [archivedIds, setArchivedIds] = React.useState([])
+  const [favorites, setFavorites] = React.useState(infoUs?.favorites || [])
+
+  React.useEffect(() => {
+    if (infoUs?.favorites) {
+      setFavorites(infoUs.favorites)
+    }
+  }, [infoUs])
 
   if (!filteredProducts) {
     return <p>Không có sản phẩm nào để hiển thị.</p>
   }
+  const saved = async (id) => {
+    try {
+      await addFavoriteAPI(id)
+      setFavorites((prev) => [...prev, id])
+      toast.success('Đã thêm vào danh sách yêu thích!')
+    } catch (error) {
+      console.log(error)
+      toast.error('Có lỗi xảy ra, vui lòng thử lại.')
+    }
+  }
 
-  const toggleArchive = (id) => {
-    setArchivedIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-    )
+  const remove = async (id) => {
+    try {
+      await removeFavoriteAPI(id)
+      setFavorites((prev) => prev.filter((favId) => favId !== id))
+      toast.success('Đã xóa khỏi danh sách yêu thích!')
+    } catch (error) {
+      console.log(error)
+      toast.error('Có lỗi xảy ra, vui lòng thử lại.')
+    }
   }
 
   return (
@@ -31,17 +56,17 @@ function ListSp({ filteredProducts }) {
         {filteredProducts.length > 0 ? (
           filteredProducts.map((product) => (
             <div
-              key={product.id}
+              key={product._id}
               className='rounded-xl h-full bg-white p-2 flex flex-col shadow-sm w-full cursor-pointer'
-              onClick={() => navigate(`/product/${product.id}`)}
+              onClick={() => navigate(`/product/${product._id}`)}
             >
               <div className='relative flex-col max-w-full flex items-center justify-center overflow-hidden rounded-xl group w-full'>
                 <div className='w-full aspect-w-4 flex items-center justify-center aspect-h-3 overflow-hidden rounded-md mb-3'>
                   <img
                     src={
-                      Array.isArray(product.image)
-                        ? product.image[0]
-                        : product.image || '/placeholder.svg'
+                      Array.isArray(product.images) && product.images.length > 0
+                        ? product.images[0]
+                        : '/placeholder.svg'
                     }
                     alt={product.title || 'Product image'}
                     className='w-auto h-52 object-cover transition-transform duration-200 group-hover:scale-105 bg-center z-0'
@@ -49,42 +74,26 @@ function ListSp({ filteredProducts }) {
                 </div>
                 <button
                   className={`btn btn-circle absolute top-2 right-2 h-8 w-8 rounded-xl border-0 z-0 ${
-                    archivedIds.includes(product.id)
+                    favorites.includes(product._id)
                       ? 'bg-red-500/70 hover:bg-red-600/70'
                       : 'bg-black/20 hover:bg-black/40'
                   }`}
                   onClick={(e) => {
                     e.stopPropagation()
-                    // if (false) {
-                    //   navigate('/login')
-                    //   return
-                    // }
-                    toggleArchive(product.id)
-                    toast.success('Cập nhật trạng thái lưu trữ thành công!')
-                    // toggleArchiveMutation.mutate(post.id, {
-                    // 	onSuccess: (res) => {
-                    // 		if (res.success) {
-                    // 			queryClient.invalidateQueries({
-                    // 				queryKey: QUERY_KEY.getArchivedPosts({
-                    // 					page: 1,
-                    // 					limit: 100,
-                    // 				}),
-                    // 			});
-                    // 			toast.success('Cập nhật trạng thái lưu trữ thành công!');
-                    // 		} else {
-                    // 			toast.error(res.message || 'Cập nhật thất bại');
-                    // 		}
-                    // 	},
-                    // 	onError: (err) => {
-                    // 		const error: any = err;
-                    // 		toast.error(error?.response?.data?.message || 'Có lỗi xảy ra');
-                    // 	},
-                    // });
+                    if (!isAuthenticated) {
+                      navigate('/login')
+                      return
+                    }
+                    if (favorites.includes(product._id)) {
+                      remove(product._id)
+                    } else {
+                      saved(product._id)
+                    }
                   }}
                 >
                   <Heart
                     className={`h-5 w-5 ${
-                      archivedIds.includes(product.id)
+                      favorites.includes(product._id)
                         ? 'text-white'
                         : 'text-white'
                     }`}
@@ -96,12 +105,12 @@ function ListSp({ filteredProducts }) {
 
                 <div className='absolute bottom-0 left-0 right-0 flex justify-between items-end to-transparent px-2 py-1 rounded-b-md z-0 pointer-events-none'>
                   <span className='text-white p-1 px-2 bg-black/40 rounded-xl text-md font-semibold'>
-                    {dayjs(product.postedAt).fromNow()}
+                    {dayjs(product.createdAt).fromNow()}
                   </span>
                   <span className='flex p-1 px-2 rounded-xl text-md bg-black/40 items-center gap-1 text-white text-md font-semibold'>
-                    {Array.isArray(product.image)
-                      ? product.image.length
-                      : product.image
+                    {Array.isArray(product.images)
+                      ? product.images.length
+                      : product.images
                       ? 1
                       : 0}
                     <svg
@@ -122,7 +131,7 @@ function ListSp({ filteredProducts }) {
                   </h3>
                   <div className='flex items-center justify-between mb-1'>
                     <span className=' px-2 font-bold text-red-600 text-xl'>
-                      {product.price.toLocaleString()} đ
+                      {product?.price?.toLocaleString()} đ
                     </span>
                   </div>
                 </div>

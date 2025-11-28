@@ -1,5 +1,8 @@
 import { PostCard } from '@/components/commons/PostCard'
 import { Button } from '@/components/ui/button'
+import { searchListingsAPI } from '@/apis'
+
+import ListSp from '@/components/ListSp'
 import { Input } from '@/components/ui/input'
 import {
   Select,
@@ -10,8 +13,6 @@ import {
 } from '@/components/ui/select'
 import { useDebounce } from '@/hooks/useDebounce'
 import provincesData from '@/json/provinces.json'
-// import { useGetAllCategories } from '@/services/query/category'
-// import { useInfinitePostQuery } from '@/services/query/post'
 import {
   ChevronDown,
   ChevronUp,
@@ -24,7 +25,7 @@ import {
 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { AGE_OPTIONS, SIZE_OPTIONS, SORT_OPTIONS } from './admin/PostManagement'
+import { SORT_OPTIONS } from '@/pages/admin/PostManagement'
 import { categoriesMock, products } from '@/constant/constant'
 import React from 'react'
 
@@ -37,8 +38,8 @@ export default function SearchResults() {
   const [showAdvanced, setShowAdvanced] = useState(false)
 
   const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || '')
-  const [provinceInput, setProvinceInput] = useState(
-    searchParams.get('province') || ''
+  const [locationInput, setLocationInput] = useState(
+    searchParams.get('location') || ''
   )
 
   const [catInput, setCatInput] = useState(searchParams.get('categoryId') || '')
@@ -53,6 +54,9 @@ export default function SearchResults() {
   )
 
   const [priceError, setPriceError] = useState(null)
+  const [searchResults, setSearchResults] = useState([])
+  const [isFetching, setIsFetching] = useState(false)
+  const [error, setError] = useState(null)
 
   const debouncedSearch = useDebounce(searchTerm, 500)
 
@@ -66,7 +70,7 @@ export default function SearchResults() {
 
   useEffect(() => {
     setSearchTerm(searchParams.get('q') || '')
-    setProvinceInput(searchParams.get('province') || '')
+    setLocationInput(searchParams.get('location') || '')
     setCatInput(searchParams.get('categoryId') || '')
 
     const rawMin = searchParams.get('minPrice') || ''
@@ -86,12 +90,12 @@ export default function SearchResults() {
     })
   }, [debouncedSearch, setSearchParams])
 
-  const handleProvinceChange = (v) => {
-    setProvinceInput(v)
+  const handleLocationChange = (v) => {
+    setLocationInput(v)
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev)
-      if (v === 'all') next.delete('province')
-      else writeOrDelete(next, 'province', v)
+      if (v === 'all') next.delete('location')
+      else writeOrDelete(next, 'location', v)
       return next
     })
   }
@@ -136,7 +140,7 @@ export default function SearchResults() {
   const applied = useMemo(() => {
     return {
       q: searchParams.get('q') || '',
-      province: searchParams.get('province') || '',
+      location: searchParams.get('location') || '',
       categoryId: searchParams.get('categoryId') || '',
       minPrice: searchParams.get('minPrice') || '',
       maxPrice: searchParams.get('maxPrice') || '',
@@ -145,57 +149,49 @@ export default function SearchResults() {
     }
   }, [searchParams])
 
-  // ====== Query data ======
-  // const {
-  //   data,
-  //   isFetching,
-  //   isFetchingNextPage,
-  //   fetchNextPage,
-  //   hasNextPage,
-  //   status,
-  //   error
-  // } = useInfinitePostQuery({
-  //   limit: ITEMS_PER_PAGE,
-  //   search: applied.q || undefined,
-  //   province: applied.province || undefined,
-  //   categoryId: applied.categoryId || undefined,
-  //   minPrice: applied.minPrice ? parseInt(applied.minPrice) : undefined,
-  //   maxPrice: applied.maxPrice ? parseInt(applied.maxPrice) : undefined,
-  //   age: applied.age || undefined,
-  //   size: applied.size || undefined,
-  //   sortBy: applied.sortBy,
-  //   sortOrder: applied.sortOrder
-  // })
-
-  // const { data: catRes, isLoading: catLoading } = useGetAllCategories()
-
-  // const categoryName = useMemo(() => {
-  //   if (!applied.categoryId || applied.categoryId === 'all') return ''
-  //   const list = catRes?.success ? catRes.data : []
-  //   return (
-  //     list.find((c) => String(c.id) === String(applied.categoryId))?.name || ''
-  //   )
-  // }, [applied.categoryId, catRes])
-  const data = products
-  const isFetching = false
-  const catLoading = true
-  const catRes = categoriesMock
+  const catLoading = false
+  const categories = categoriesMock
   const categoryName = ''
-  const allPosts = []
   const hasNextPage = false
   const hasFilters = !!(
     applied.q ||
-    applied.province ||
+    applied.location ||
     applied.categoryId ||
     applied.minPrice ||
     applied.maxPrice ||
-    applied.age ||
-    applied.size ||
     applied.sortBy !== 'createdAt' ||
     applied.sortOrder !== 'desc'
   )
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await getCategoriesAPI()
+        setCategories(res)
+      } catch (error) {
+        console.error('Failed to fetch categories', error)
+      }
+    }
+    fetchCategories()
+  }, [])
 
-  // const allPosts = data?.pages.flatMap((p) => (p?.success ? p.data : [])) || []
+  useEffect(() => {
+    const performSearch = async () => {
+      setIsFetching(true)
+      setError(null)
+      try {
+        const params = Object.fromEntries(searchParams.entries())
+        const results = await searchListingsAPI(params)
+        setSearchResults(results)
+      } catch (err) {
+        setError(err)
+        console.error('Failed to search listings:', err)
+      } finally {
+        setIsFetching(false)
+      }
+    }
+
+    performSearch()
+  }, [searchParams])
 
   const formatPrice = (price) =>
     price ? Number(price).toLocaleString('vi-VN') : ''
@@ -242,9 +238,9 @@ export default function SearchResults() {
             )}
           </div>
 
-          {/* Province */}
+          {/* location */}
           <div className='w-full sm:w-64'>
-            <Select value={provinceInput} onValueChange={handleProvinceChange}>
+            <Select value={locationInput} onValueChange={handleLocationChange}>
               <SelectTrigger>
                 <Filter className='w-4 h-4 mr-2' />
                 <SelectValue placeholder='Chọn tỉnh/thành' />
@@ -275,8 +271,8 @@ export default function SearchResults() {
               </SelectTrigger>
               <SelectContent className='max-h-60 overflow-y-auto'>
                 <SelectItem value='all'>Tất cả</SelectItem>
-                {catRes.map((c) => (
-                  <SelectItem key={c.id} value={String(c.id)}>
+                {categories.map((c) => (
+                  <SelectItem key={c._id} value={String(c._id)}>
                     {c.name}
                   </SelectItem>
                 ))}
@@ -322,9 +318,9 @@ export default function SearchResults() {
                 Tìm kiếm: "{applied.q}"
               </span>
             )}
-            {applied.province && (
+            {applied.location && (
               <span className='bg-indigo-100 text-indigo-800 px-2 py-1 rounded'>
-                Tỉnh: {applied.province}
+                Tỉnh: {applied.location}
               </span>
             )}
             {applied.categoryId && (
@@ -395,40 +391,6 @@ export default function SearchResults() {
                 <p className='mt-1 text-xs text-red-600'>{priceError}</p>
               )}
             </div>
-            {/* Age */}
-            <div>
-              <label className='block text-sm'>Độ tuổi</label>
-              <Select value={ageInput} onValueChange={setAgeInput}>
-                <SelectTrigger className='text-sm'>
-                  <SelectValue placeholder='Chọn độ tuổi' />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value='all'>Tất cả</SelectItem>
-                  {AGE_OPTIONS.map((a) => (
-                    <SelectItem key={a.value} value={a.value}>
-                      {a.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            {/* Size */}
-            <div>
-              <label className='block text-sm'>Kích thước</label>
-              <Select value={sizeInput} onValueChange={setSizeInput}>
-                <SelectTrigger className='text-sm'>
-                  <SelectValue placeholder='Chọn kích thước' />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value='all'>Tất cả</SelectItem>
-                  {SIZE_OPTIONS.map((s) => (
-                    <SelectItem key={s.value} value={s.value}>
-                      {s.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
             {/* Sort */}
             <div>
               <label className='block text-sm'>Sắp xếp</label>
@@ -471,49 +433,35 @@ export default function SearchResults() {
 
       {/* Results */}
       <div className='space-y-4'>
-        {status === 'error' && (
-          <div className='text-red-500'>Có lỗi: {error.message}</div>
-        )}
-
-        {/* No results */}
-        {status === 'success' && allPosts.length === 0 && (
-          <div className='text-center text-gray-500 py-12'>
-            Không có kết quả
+        {error && (
+          <div className='text-red-500 text-center'>
+            Có lỗi xảy ra khi tải kết quả tìm kiếm.
           </div>
         )}
 
-        {/* Grid/List */}
-        <div
-          className={
-            viewMode === 'grid'
-              ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'
-              : 'space-y-4'
-          }
-        >
-          {allPosts.map((post) => (
-            <PostCard key={post.id} post={post} viewMode={viewMode} />
-          ))}
-
-          {isFetching &&
-            Array.from({
-              length: Math.max(
-                0,
-                ITEMS_PER_PAGE -
-                  (allPosts.length % ITEMS_PER_PAGE || ITEMS_PER_PAGE)
-              )
-            }).map((_, idx) => (
-              <PostCard.Skeleton key={idx} viewMode={viewMode} />
+        {isFetching ? (
+          <div className='grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-5 md:gap-4'>
+            {Array.from({ length: 10 }).map((_, idx) => (
+              <div
+                key={idx}
+                className='animate-pulse bg-white rounded-md shadow p-2'
+              >
+                <div className='bg-gray-200 h-40 sm:h-48 w-full rounded-md mb-2' />
+                <div className='h-4 bg-gray-200 rounded w-3/4 mb-2' />
+                <div className='h-4 bg-gray-200 rounded w-1/2 mb-2' />
+                <div className='h-3 bg-gray-100 rounded w-1/3' />
+              </div>
             ))}
-        </div>
+          </div>
+        ) : (
+          <ListSp filteredProducts={searchResults} />
+        )}
 
         {/* Load more */}
         {hasNextPage && (
           <div className='flex justify-center pt-6'>
-            <Button
-              onClick={() => fetchNextPage()}
-              disabled={isFetchingNextPage}
-            >
-              {isFetchingNextPage ? 'Đang tải...' : 'Tải thêm'}
+            <Button onClick={() => {}} disabled={isFetching}>
+              {isFetching ? 'Đang tải...' : 'Tải thêm'}
             </Button>
           </div>
         )}

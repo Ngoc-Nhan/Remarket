@@ -25,9 +25,10 @@ export default function AdminLayout() {
     )
   }
 
-  // if (user?.role !== 'ADMIN') {
-  //   return <Navigate to='/' replace />
-  // }
+  if (user && user?.role !== 'admin') {
+    console.log(user?.role)
+    return <Navigate to='/' />
+  }
 
   // Main layout
   return (

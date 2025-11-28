@@ -1,37 +1,55 @@
+import { findOrCreateConversationAPI, getFavoritesAPI } from '@/apis'
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
 
-const mockFavourites = [
-  {
-    id: '1',
-    img: 'https://i.pinimg.com/736x/7d/0c/6b/7d0c6bc79cfa39153751c56433141483.jpg',
-    title: 'Mua Bán cỏ nhân tạo thanh lý giá sốc 19k/ m vuông',
-    price: 19000,
-    oldPrice: 20000,
-    type: 'Cá Nhân',
-    priority: 'Tin Ưu Tiên',
-    location: 'Quận Tân Bình'
-  },
-  {
-    id: '2',
-    img: 'https://i.pinimg.com/736x/7d/0c/6b/7d0c6bc79cfa39153751c56433141483.jpg',
-    title: 'Mua Bán cỏ nhân tạo thanh lý giá sốc 19k/ m vuông',
-    price: 19000,
-    oldPrice: 20000,
-    type: 'Cá Nhân',
-    priority: 'Tin Ưu Tiên',
-    location: 'Quận Tân Bình'
-  }
-]
+// const mockFavourites = [
+//   {
+//     id: '1',
+//     img: 'https://i.pinimg.com/736x/7d/0c/6b/7d0c6bc79cfa39153751c56433141483.jpg',
+//     title: 'Mua Bán cỏ nhân tạo thanh lý giá sốc 19k/ m vuông',
+//     price: 19000,
+//     oldPrice: 20000,
+//     type: 'Cá Nhân',
+//     priority: 'Tin Ưu Tiên',
+//     location: 'Quận Tân Bình'
+//   },
+//   {
+//     id: '2',
+//     img: 'https://i.pinimg.com/736x/7d/0c/6b/7d0c6bc79cfa39153751c56433141483.jpg',
+//     title: 'Mua Bán cỏ nhân tạo thanh lý giá sốc 19k/ m vuông',
+//     price: 19000,
+//     oldPrice: 20000,
+//     type: 'Cá Nhân',
+//     priority: 'Tin Ưu Tiên',
+//     location: 'Quận Tân Bình'
+//   }
+// ]
 
 const FavouritesPage = () => {
   const [items, setItems] = useState([])
   const [favourited, setFavourited] = useState(new Set())
   const [selected, setSelected] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const navigate = useNavigate()
+
+  const getFavourites = async () => {
+    setIsLoading(true)
+    try {
+      // Thay bằng fetch API nếu cần
+      const res = await getFavoritesAPI()
+      setItems(res || mockFavourites)
+      setFavourited(new Set(res.map((i) => i.id)))
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   useEffect(() => {
     // Thay bằng fetch API nếu cần
-    setItems(mockFavourites)
-    setFavourited(new Set(mockFavourites.map((i) => i.id)))
+    getFavourites()
   }, [])
 
   const formatPrice = (v) =>
@@ -64,24 +82,24 @@ const FavouritesPage = () => {
         )}
 
         {items.map((item) => {
-          const isSelected = selected === item.id
-          const isFavorited = favourited.has(item.id)
+          const isSelected = selected === item._id
+          const isFavorited = favourited.has(item._id)
 
           return (
             <div
-              key={item.id}
+              key={item._id}
               className={`w-full bg-white rounded-md border p-4 flex gap-4 items-start transition-shadow hover:shadow-md ${
                 isSelected ? 'ring-2 ring-green-200' : ''
               }`}
-              onClick={() => onSelect(item.id)}
+              onClick={() => onSelect(item?._id)}
               role='button'
               tabIndex={0}
               onKeyDown={() => {}}
             >
               <div className='w-28 h-28 flex-shrink-0 rounded-md overflow-hidden bg-gray-100'>
                 <img
-                  src={item.img}
-                  alt={item.title}
+                  src={item?.images[0] || '/placeholder.svg'}
+                  alt={item?.title}
                   className='object-cover w-full h-full'
                 />
               </div>
@@ -138,8 +156,15 @@ const FavouritesPage = () => {
                 <button
                   className='border border-green-600 text-green-600 px-4 py-1 rounded-full text-sm hover:bg-green-50'
                   onClick={(e) => {
-                    e.stopPropagation()
-                    alert(`Mở chat với người bán: ${item.id}`)
+                    const handleChat = async () => {
+                      if (!item?.seller?._id)
+                        return toast.error(
+                          'Không tìm thấy thông tin người bán.'
+                        )
+                      await findOrCreateConversationAPI(item.seller._id)
+                      navigate(`/messages?user=${item.seller._id}`)
+                    }
+                    handleChat()
                   }}
                 >
                   Chat

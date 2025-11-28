@@ -117,30 +117,18 @@ export function HeroSearch() {
   const handleSearchInputFocus = () => {
     setIsSearchFocused(true)
   }
+  // const navigate = useNavigate()
+  const handleClickDM = (id) => {
+    const params = new URLSearchParams()
+    params.set('categoryId', id)
+    navigate(`/search?${params.toString()}`)
+  }
   return (
     <div className='bg-white p-2 rounded-xl shadow-lg flex flex-col md:flex-row w-full max-w-7xl'>
       <div
         className={`flex-1 py-2 px-2  transition-opacity duration-300 sm:py-2.5 sm:pl-6 sm:pr-8 w-full`}
       >
         <div className='flex items-center bg-white rounded-sm'>
-          <div className='px-4 py-2 md:border-r border-gray-300 flex items-center justify-between cursor-pointer hover:bg-gray-100 rounded-lg md:rounded-l-lg md:rounded-r-none mb-2 md:mb-0'>
-            <span className='font-medium text-gray-700'>Danh mục</span>
-            <svg
-              className='w-4 h-4 ml-2 text-gray-500'
-              fill='none'
-              stroke='currentColor'
-              viewBox='0 0 24 24'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                strokeWidth='2'
-                d='M19 9l-7 7-7-7'
-              ></path>
-            </svg>
-          </div>
-
           <div
             ref={recentContainerRef}
             className='pl-2 sm:pl-5 flex-1 relative'
@@ -234,7 +222,10 @@ export function HeroSearch() {
             </span>
             <ChevronDown className='w-4 h-4 sm:w-5 sm:h-5' />
           </div>
-          <button className='bg-yellow-500 hover:bg-yellow-600 text-white font-bold md:py-2 py-1 px-2 md:px-6 rounded-lg md:rounded-lg md:rounded-l-none  md:w-auto md:ml-2'>
+          <button
+            className='bg-yellow-500 hover:bg-yellow-600 text-white font-bold md:py-2 py-1 px-2 md:px-6 rounded-lg md:rounded-lg md:rounded-l-none  md:w-auto md:ml-2 cursor-pointer'
+            onClick={handleSearch}
+          >
             Tìm kiếm
           </button>
         </div>

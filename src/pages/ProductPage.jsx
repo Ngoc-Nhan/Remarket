@@ -14,21 +14,23 @@ import {
   Clock
 } from 'lucide-react'
 import { getRelativeTime } from '@/helper'
-// import {
-//   usePostById,
-//   useArchivedPosts,
-//   useToggleArchivePost
-// } from '@/services/query/post'
-// import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
+import {
+  addFavoriteAPI,
+  findOrCreateConversationAPI,
+  getListingDetailsAPI,
+  removeFavoriteAPI
+} from '@/apis'
+import { useAuthStore } from '@/stores/useAuthStore'
+import { useNavigate } from 'react-router-dom'
 // import { QUERY_KEY } from '@/config/key'
 
-const ageMap = {
-  PUPPY: 'Chó con',
-  YOUNG_DOG: 'Chó nhỏ',
-  ADULT_DOG: 'Chó trưởng thành',
-  OTHER: 'Khác'
-}
+// const ageMap = {
+//   PUPPY: 'Chó con',
+//   YOUNG_DOG: 'Chó nhỏ',
+//   ADULT_DOG: 'Chó trưởng thành',
+//   OTHER: 'Khác'
+// }
 
 // Example product data for development/testing
 const EXAMPLE_PRODUCT = {
@@ -85,10 +87,19 @@ Liên hệ ngay để xem thực tế và thương lượng giá!`,
 export default function ProductDetailPage() {
   // const { isAuthenticated } = useCurrentApp()
   const { id } = useParams()
+  const { user: infoUs, fetchMe } = useAuthStore()
   // const { data, isLoading, isError, refetch } = usePostById(id || '')
+  const navigate = useNavigate()
   const [currentImageIdx, setCurrentImageIdx] = useState(0)
   const [showPhone, setShowPhone] = useState(false)
+  const isAuthenticated = Boolean(infoUs)
 
+  const archivedIds = infoUs?.favorites || []
+  const [isArchived, setIsArchived] = useState(archivedIds.includes(id))
+
+  const [isLoading, setIsLoading] = useState(true)
+  const isError = false
+  const data = null
   // const queryClient = useQueryClient()
   // const toggleArchiveMutation = useToggleArchivePost()
   // const { data: archivedData } = useArchivedPosts({ page: 1, limit: 100 })
@@ -100,11 +111,25 @@ export default function ProductDetailPage() {
   // useEffect(() => {
   //   if (id) refetch()
   // }, [id])
-  const isAuthenticated = false
-  const archivedIds = []
-  const isLoading = false
-  const isError = false
-  const data = null
+  const [listingDetail, setListingDetail] = useState(null)
+
+  const getListingDetails = async () => {
+    try {
+      setIsLoading(true)
+      const res = await getListingDetailsAPI(id)
+      if (res) console.log(res)
+      // const isError = false
+      setListingDetail(res)
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+  useEffect(() => {
+    getListingDetails()
+  }, [])
+
   if (isLoading)
     return (
       <main className='pt-6 bg-gray-100 min-h-screen'>
@@ -169,15 +194,14 @@ export default function ProductDetailPage() {
     )
 
   // Use example data if API data is not available
-  const post = data || EXAMPLE_PRODUCT
+  const post = listingDetail || EXAMPLE_PRODUCT
 
   if (isError && !data)
     return <div className='p-6'>Không tìm thấy bài đăng</div>
 
-  const mainImage =
-    post.postImages?.[currentImageIdx]?.url || '/placeholder.svg'
-  const thumbnails = post.postImages?.map((img) => img.url) || []
-  const user = post.user || {}
+  const mainImage = post.images?.[currentImageIdx] || '/placeholder.svg'
+  const thumbnails = post.images?.map((img) => img) || []
+  const user = post.seller || {}
   const userAvatar = user.avatar || '/placeholder.svg'
   const userName = user.name || 'Người dùng'
   const userPhone = user.phoneNumber || ''
@@ -195,7 +219,28 @@ export default function ProductDetailPage() {
       prev === thumbnails.length - 1 ? 0 : prev + 1
     )
   }
-
+  const saved = async () => {
+    try {
+      const res = await addFavoriteAPI(post._id)
+      archivedIds.push(post._id)
+      setIsArchived(true)
+      toast.success('Đã thêm vào danh sách yêu thích!')
+    } catch (error) {
+      console.log(error)
+      toast.error('Có lỗi xảy ra, vui lòng thử lại.')
+    }
+  }
+  const remove = async () => {
+    try {
+      const res = await removeFavoriteAPI(post._id)
+      archivedIds.splice(archivedIds.indexOf(post._id), 1)
+      setIsArchived(false)
+      toast.success('Đã xóa khỏi danh sách yêu thích!')
+    } catch (error) {
+      console.log(error)
+      toast.error('Có lỗi xảy ra, vui lòng thử lại.')
+    }
+  }
   return (
     <main className='pt-6 bg-gray-100 min-h-screen'>
       <div className='mx-auto max-w-[1200px] px-4 md:px-6 lg:px-6 pb-8'>
@@ -274,45 +319,26 @@ export default function ProductDetailPage() {
                 variant='ghost'
                 size='icon'
                 className={
-                  archivedIds.includes(post.id)
-                    ? 'bg-red-500 hover:bg-red-600'
-                    : ''
+                  isArchived
+                    ? 'bg-red-500 rounded-full hover:bg-red-600'
+                    : 'rounded-full'
                 }
                 onClick={() => {
                   if (!isAuthenticated) {
-                    window.open(
-                      '/login?popup=1',
-                      '_blank',
-                      'noopener,noreferrer,toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=420,height=680'
-                    )
+                    navigate('/login')
                     return
                   }
-                  toggleArchiveMutation.mutate(post.id, {
-                    onSuccess: (res) => {
-                      if (res.success) {
-                        queryClient.invalidateQueries({
-                          queryKey: QUERY_KEY.getArchivedPosts({
-                            page: 1,
-                            limit: 100
-                          })
-                        })
-                        toast.success('Cập nhật trạng thái lưu trữ thành công!')
-                      } else {
-                        toast.error(res.message || 'Cập nhật thất bại')
-                      }
-                    },
-                    onError: (err) => {
-                      const error = err
-                      toast.error(
-                        error?.response?.data?.message || 'Có lỗi xảy ra'
-                      )
-                    }
-                  })
+                  // Sửa lỗi logic: Nếu đã yêu thích thì xóa, chưa thì thêm
+                  if (archivedIds.includes(post._id)) {
+                    remove()
+                  } else {
+                    saved()
+                  }
                 }}
               >
                 <Heart
                   className={`w-5 h-5 ${
-                    archivedIds.includes(post.id)
+                    archivedIds.includes(post._id)
                       ? 'text-white'
                       : 'text-gray-500'
                   }`}
@@ -320,14 +346,14 @@ export default function ProductDetailPage() {
               </button>
             </div>
             <p className='text-base text-muted-foreground'>
-              {post.category.name} • {ageMap[post.age] || 'Không rõ tuổi'}
+              {post?.categoryId}
             </p>
             <p className='text-red-600 text-2xl font-bold'>
               {post.price.toLocaleString()} đ
             </p>
             <div className='flex items-center gap-2 text-sm text-muted-foreground'>
               <MapPin className='w-4 h-4' />
-              {post.address}
+              {post?.loation}
             </div>
             <div className='flex items-center gap-2 text-sm text-muted-foreground'>
               <Clock className='w-4 h-4' />
@@ -353,7 +379,24 @@ export default function ProductDetailPage() {
                   {showPhone ? userPhone : `Hiện số ${phoneMasked}`}
                 </button>
               )}
-              <button className='bg-yellow-400 text-black hover:bg-yellow-500 text-sm'>
+              <button
+                className='bg-yellow-400 text-black  hover:bg-yellow-500 text-sm'
+                onClick={() => {
+                  // 1. Check authentication
+                  if (!isAuthenticated) {
+                    navigate('/login')
+                    return
+                  }
+                  // 2. Find or create conversation and then navigate
+                  const handleChat = async () => {
+                    if (!post?.seller?._id)
+                      return toast.error('Không tìm thấy thông tin người bán.')
+                    await findOrCreateConversationAPI(post.seller._id)
+                    navigate(`/messages?user=${post.seller._id}`)
+                  }
+                  handleChat()
+                }}
+              >
                 <MessageSquare className='w-4 h-4 mr-2' /> Chat
               </button>
             </div>
@@ -434,15 +477,9 @@ export default function ProductDetailPage() {
               <h2 className='text-xl font-bold mb-4'>Thông tin chi tiết</h2>
               <div className='divide-y divide-gray-200'>
                 <div className='flex justify-between py-2 border-b border-gray-200'>
-                  <span className='text-gray-600'>Giống thú cưng:</span>
+                  {/* <span className='text-gray-600'>Giống thú cưng:</span> */}
                   <span className='font-medium'>
-                    {post.category?.name || 'Không rõ'}
-                  </span>
-                </div>
-                <div className='flex justify-between py-2 border-b border-gray-200'>
-                  <span className='text-gray-600'>Độ tuổi:</span>
-                  <span className='font-medium'>
-                    {ageMap[post.age] || 'Không rõ'}
+                    {post?.categoryId || 'Không rõ'}
                   </span>
                 </div>
               </div>

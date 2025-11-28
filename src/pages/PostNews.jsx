@@ -8,6 +8,8 @@ import { Camera, Info } from 'lucide-react'
 import { toast } from 'sonner'
 import React from 'react'
 import AddressDialog from '../components/dialog/AddressDialog'
+import { uploadFileToCloudinary } from '@/services/api/cloudinary'
+import { categoriesMock } from '@/constant/constant'
 
 export default function PostNews() {
   const navigate = useNavigate()
@@ -38,7 +40,7 @@ export default function PostNews() {
   //     limit: 100
   //   })
   const isCategoriesLoading = false
-  const categories = []
+  const categories = categoriesMock
   const createPostMutation = { isPending: false, mutate: () => {} }
   // const categories =
   //   categoriesData && 'data' in categoriesData && categoriesData.success
@@ -179,8 +181,6 @@ export default function PostNews() {
         title,
         description,
         price: Number(price),
-        age,
-        size,
         address: address
           ? `${address.specificAddress}, ${address.wardLabel}, ${address.provinceLabel}`
           : '',
@@ -377,70 +377,6 @@ export default function PostNews() {
                   Thông tin chi tiết
                 </h3>
                 <div className='space-y-3'>
-                  {/* Age */}
-                  <div>
-                    <label className='form-control w-full'>
-                      <div className='label'>
-                        <span className='label-text text-sm'>Độ tuổi *</span>
-                      </div>
-                      <select
-                        id='age'
-                        className={`select select-bordered w-full ${
-                          errors.age ? 'select-error' : ''
-                        }`}
-                        value={age}
-                        onChange={(e) => setAge(e.target.value)}
-                      >
-                        {/* <option value=''>Chọn độ tuổi</option>
-                        {Object.entries(ageMap).map(([key, value]) => (
-                          <option key={key} value={key}>
-                            {value}
-                          </option>
-                        ))} */}
-                      </select>
-                      {errors.age && (
-                        <div className='label'>
-                          <span className='label-text-alt text-error'>
-                            {errors.age}
-                          </span>
-                        </div>
-                      )}
-                    </label>
-                  </div>
-
-                  {/* Size */}
-                  <div>
-                    <label className='form-control w-full'>
-                      <div className='label'>
-                        <span className='label-text text-sm'>
-                          Kích cỡ thú cưng *
-                        </span>
-                      </div>
-                      <select
-                        id='size'
-                        className={`select select-bordered w-full ${
-                          errors.size ? 'select-error' : ''
-                        }`}
-                        value={size}
-                        onChange={(e) => setSize(e.target.value)}
-                      >
-                        <option value=''>Chọn kích cỡ</option>
-                        {Object.entries(sizeMap).map(([key, value]) => (
-                          <option key={key} value={key}>
-                            {value}
-                          </option>
-                        ))}
-                      </select>
-                      {errors.size && (
-                        <div className='label'>
-                          <span className='label-text-alt text-error'>
-                            {errors.size}
-                          </span>
-                        </div>
-                      )}
-                    </label>
-                  </div>
-
                   {/* Price */}
                   <div>
                     <label className='form-control w-full'>

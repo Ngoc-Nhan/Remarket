@@ -1,4 +1,3 @@
-import axiosApi from '../utils/api'
 import authorizedAxiosInstance from '../utils/authorizeAxios'
 import { API_ROOT } from '../utils/constants'
 

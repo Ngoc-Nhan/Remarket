@@ -13,6 +13,7 @@ import {
   Hammer,
   Grid2x2
 } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 function Home() {
   // const [searchTerm, setSearchTerm] = useState('')
   // const filteredProducts = products.filter(
@@ -30,7 +31,12 @@ function Home() {
   //   const savedUser = JSON.parse(localStorage.getItem('user'))
   //   if (savedUser) dispatch(setUser(savedUser))
   // }, [dispatch])
-
+  const navigate = useNavigate()
+  const handleClickDM = (id) => {
+    const params = new URLSearchParams()
+    params.set('categoryId', id)
+    navigate(`/search?${params.toString()}`)
+  }
   const [activeTab, setActiveTab] = useState('forYou')
   const [postList, setPostList] = useState(products)
   const [isLoading, setIsLoading] = useState(false)
@@ -125,6 +131,7 @@ function Home() {
                   <div
                     key={category.id ?? category.slug}
                     className='flex flex-col w-30 h-30 items-center p-2 hover:scale-105 transition duration-200 cursor-pointer rounded-2xl'
+                    onClick={() => handleClickDM(category?.id)}
                   >
                     {/* <div className='w-30 h-30 mx-2  mb-1 flex flex-col items-center justify-center bg-gray-100 rounded-lg'> */}
                     <div

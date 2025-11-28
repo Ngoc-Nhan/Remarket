@@ -25,7 +25,7 @@ import {
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { AGE_OPTIONS, SIZE_OPTIONS, SORT_OPTIONS } from './admin/PostManagement'
-import { products } from '@/constant/constant'
+import { categoriesMock, products } from '@/constant/constant'
 import React from 'react'
 
 const ITEMS_PER_PAGE = 10
@@ -44,8 +44,6 @@ export default function SearchResults() {
   const [catInput, setCatInput] = useState(searchParams.get('categoryId') || '')
   const [minInput, setMinInput] = useState(searchParams.get('minPrice') || '')
   const [maxInput, setMaxInput] = useState(searchParams.get('maxPrice') || '')
-  const [ageInput, setAgeInput] = useState(searchParams.get('age') || '')
-  const [sizeInput, setSizeInput] = useState(searchParams.get('size') || '')
 
   const [sortBy, setSortBy] = useState(
     searchParams.get('sortBy') || 'createdAt'
@@ -75,9 +73,6 @@ export default function SearchResults() {
     const rawMax = searchParams.get('maxPrice') || ''
     setMinInput(/^\d+$/.test(rawMin) ? rawMin : '')
     setMaxInput(/^\d+$/.test(rawMax) ? rawMax : '')
-
-    setAgeInput(searchParams.get('age') || '')
-    setSizeInput(searchParams.get('size') || '')
     setSortBy(searchParams.get('sortBy') || 'createdAt')
     setSortOrder(searchParams.get('sortOrder') || 'desc')
   }, [searchParams])
@@ -130,8 +125,6 @@ export default function SearchResults() {
       writeOrDelete(next, 'categoryId', catInput, (v) => !v || v === 'all')
       writeOrDelete(next, 'minPrice', minInput, (v) => !v)
       writeOrDelete(next, 'maxPrice', maxInput, (v) => !v)
-      writeOrDelete(next, 'age', ageInput, (v) => !v || v === 'all')
-      writeOrDelete(next, 'size', sizeInput, (v) => !v || v === 'all')
       return next
     })
   }
@@ -147,8 +140,6 @@ export default function SearchResults() {
       categoryId: searchParams.get('categoryId') || '',
       minPrice: searchParams.get('minPrice') || '',
       maxPrice: searchParams.get('maxPrice') || '',
-      age: searchParams.get('age') || '',
-      size: searchParams.get('size') || '',
       sortBy: searchParams.get('sortBy') || 'createdAt',
       sortOrder: searchParams.get('sortOrder') || 'desc'
     }
@@ -187,8 +178,8 @@ export default function SearchResults() {
   // }, [applied.categoryId, catRes])
   const data = products
   const isFetching = false
-  const catLoading = false
-  const catRes = {}
+  const catLoading = true
+  const catRes = categoriesMock
   const categoryName = ''
   const allPosts = []
   const hasNextPage = false
@@ -284,12 +275,11 @@ export default function SearchResults() {
               </SelectTrigger>
               <SelectContent className='max-h-60 overflow-y-auto'>
                 <SelectItem value='all'>Tất cả</SelectItem>
-                {catRes?.success &&
-                  catRes.data.map((c) => (
-                    <SelectItem key={c.id} value={String(c.id)}>
-                      {c.name}
-                    </SelectItem>
-                  ))}
+                {catRes.map((c) => (
+                  <SelectItem key={c.id} value={String(c.id)}>
+                    {c.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -346,20 +336,6 @@ export default function SearchResults() {
               <span className='bg-purple-100 text-purple-800 px-2 py-1 rounded'>
                 Giá: {formatPrice(applied.minPrice) || '0'} -{' '}
                 {formatPrice(applied.maxPrice) || '∞'} VNĐ
-              </span>
-            )}
-            {applied.age && (
-              <span className='bg-orange-100 text-orange-800 px-2 py-1 rounded'>
-                Tuổi:{' '}
-                {AGE_OPTIONS.find((a) => a.value === applied.age)?.label ||
-                  applied.age}
-              </span>
-            )}
-            {applied.size && (
-              <span className='bg-yellow-100 text-yellow-800 px-2 py-1 rounded'>
-                Kích thước:{' '}
-                {SIZE_OPTIONS.find((s) => s.value === applied.size)?.label ||
-                  applied.size}
               </span>
             )}
             {(applied.sortBy !== 'createdAt' ||

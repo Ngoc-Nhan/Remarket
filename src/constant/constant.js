@@ -198,306 +198,117 @@ import {
 
 const categoriesMock = [
   {
-    id: 'cate-1',
+    _id: 'cate-1',
     name: 'Điện Thoại - Laptop',
-    slug: 'dien-tu',
-    image: 'https://placehold.co/300x200?text=Dien+Tu',
-    parentId: null,
+    slug: 'dien-thoai-laptop',
+    description: '',
+    code: '100',
+    parentCode: null,
+    imageUrl:
+      'https://www.chotot.com/_next/image?url=https%3A%2F%2Fstatic.chotot.com%2Fstorage%2Fchapy-pro%2Fnewcats%2Fv12%2F5000.png&w=256&q=95',
     icon: Zap,
-    color: 'text-blue-500'
+    color: 'text-blue-500',
+    createdAt: Date.now(),
+    updatedAt: null,
+    _destroy: false
   },
   {
-    id: 'cate-1-1',
-    name: 'Điện thoại',
-    slug: 'dien-thoai',
-    image: 'https://placehold.co/300x200?text=Dien+Thoai',
-    parentId: 'cate-1'
-  },
-  {
-    id: 'cate-1-2',
-    name: 'Laptop',
-    slug: 'laptop',
-    image: 'https://placehold.co/300x200?text=Laptop',
-    parentId: 'cate-1'
-  },
-  {
-    id: 'cate-1-3',
-    name: 'Máy tính bảng',
-    slug: 'may-tinh-bang',
-    image: 'https://placehold.co/300x200?text=Tablet',
-    parentId: 'cate-1'
-  },
-  {
-    id: 'cate-1-4',
-    name: 'Màn hình',
-    slug: 'man-hinh',
-    image: 'https://placehold.co/300x200?text=Monitor',
-    parentId: 'cate-1'
-  },
-  {
-    id: 'cate-1-5',
-    name: 'Phụ kiện công nghệ',
-    slug: 'phu-kien-cong-nghe',
-    image: 'https://placehold.co/300x200?text=Accessory',
-    parentId: 'cate-1'
-  },
-
-  {
-    id: 'cate-2',
+    _id: 'cate-2',
     name: 'Xe cộ',
     slug: 'xe-co',
-    image: 'https://placehold.co/300x200?text=Xe+Co',
-    parentId: null,
+    description: '',
+    code: '200',
+    parentCode: null,
+    imageUrl: 'https://placehold.co/300x200?text=Xe+Co',
     icon: Bike,
-    color: 'text-red-500'
+    color: 'text-red-500',
+    createdAt: Date.now(),
+    updatedAt: null,
+    _destroy: false
   },
   {
-    id: 'cate-2-1',
-    name: 'Xe máy',
-    slug: 'xe-may',
-    image: 'https://placehold.co/300x200?text=Xe+May',
-    parentId: 'cate-2'
-  },
-  {
-    id: 'cate-2-2',
-    name: 'Ô tô',
-    slug: 'o-to',
-    image: 'https://placehold.co/300x200?text=O+To',
-    parentId: 'cate-2'
-  },
-  {
-    id: 'cate-2-3',
-    name: 'Xe đạp',
-    slug: 'xe-dap',
-    image: 'https://placehold.co/300x200?text=Xe+DAP',
-    parentId: 'cate-2'
-  },
-  {
-    id: 'cate-2-4',
-    name: 'Xe điện',
-    slug: 'xe-dien',
-    image: 'https://placehold.co/300x200?text=Xe+Dien',
-    parentId: 'cate-2'
-  },
-
-  {
-    id: 'cate-3',
+    _id: 'cate-3',
     name: 'Đồ dùng - Nội thất',
     slug: 'do-dung-noi-that',
-    image: 'https://placehold.co/300x200?text=Noi+That',
-    parentId: null,
+    description: '',
+    code: '300',
+    parentCode: null,
+    imageUrl: 'https://placehold.co/300x200?text=Noi+That',
     icon: Sofa,
-    color: 'text-yellow-600'
+    color: 'text-yellow-600',
+    createdAt: Date.now(),
+    updatedAt: null,
+    _destroy: false
   },
   {
-    id: 'cate-3-1',
-    name: 'Bàn ghế',
-    slug: 'ban-ghe',
-    image: 'https://placehold.co/300x200?text=Ban+Ghe',
-    parentId: 'cate-3'
-  },
-  {
-    id: 'cate-3-2',
-    name: 'Giường nệm',
-    slug: 'giuong-nem',
-    image: 'https://placehold.co/300x200?text=Giuong+Nem',
-    parentId: 'cate-3'
-  },
-  {
-    id: 'cate-3-3',
-    name: 'Tủ kệ',
-    slug: 'tu-ke',
-    image: 'https://placehold.co/300x200?text=Tu+Ke',
-    parentId: 'cate-3'
-  },
-  {
-    id: 'cate-3-4',
-    name: 'Đồ trang trí',
-    slug: 'do-trang-tri',
-    image: 'https://placehold.co/300x200?text=Decor',
-    parentId: 'cate-3'
-  },
-
-  {
-    id: 'cate-4',
+    _id: 'cate-4',
     name: 'Điện gia dụng',
     slug: 'dien-gia-dung',
-    image: 'https://placehold.co/300x200?text=Dien+Gia+Dung',
-    parentId: null,
+    description: '',
+    code: '400',
+    parentCode: null,
+    imageUrl: 'https://placehold.co/300x200?text=Dien+Gia+Dung',
     icon: Microwave,
-    color: 'text-green-500'
+    color: 'text-green-500',
+    createdAt: Date.now(),
+    updatedAt: null,
+    _destroy: false
   },
   {
-    id: 'cate-4-1',
-    name: 'Tủ lạnh',
-    slug: 'tu-lanh',
-    image: 'https://placehold.co/300x200?text=Tu+Lanh',
-    parentId: 'cate-4'
-  },
-  {
-    id: 'cate-4-2',
-    name: 'Máy giặt',
-    slug: 'may-giat',
-    image: 'https://placehold.co/300x200?text=May+Giat',
-    parentId: 'cate-4'
-  },
-  {
-    id: 'cate-4-3',
-    name: 'Máy lạnh',
-    slug: 'may-lanh',
-    image: 'https://placehold.co/300x200?text=May+Lanh',
-    parentId: 'cate-4'
-  },
-  {
-    id: 'cate-4-4',
-    name: 'Đồ bếp',
-    slug: 'do-bep',
-    image: 'https://placehold.co/300x200?text=Do+Bep',
-    parentId: 'cate-4'
-  },
-
-  {
-    id: 'cate-5',
+    _id: 'cate-5',
     name: 'Thời trang',
     slug: 'thoi-trang',
-    image: 'https://placehold.co/300x200?text=Thoi+Trang',
-    parentId: null,
+    description: '',
+    code: '500',
+    parentCode: null,
+    imageUrl: 'https://placehold.co/300x200?text=Thoi+Trang',
     icon: Shirt,
-    color: 'text-pink-500'
+    color: 'text-pink-500',
+    createdAt: Date.now(),
+    updatedAt: null,
+    _destroy: false
   },
   {
-    id: 'cate-5-1',
-    name: 'Quần áo',
-    slug: 'quan-ao',
-    image: 'https://placehold.co/300x200?text=Quan+Ao',
-    parentId: 'cate-5'
-  },
-  {
-    id: 'cate-5-2',
-    name: 'Giày dép',
-    slug: 'giay-dep',
-    image: 'https://placehold.co/300x200?text=Giay+Dep',
-    parentId: 'cate-5'
-  },
-  {
-    id: 'cate-5-3',
-    name: 'Túi xách',
-    slug: 'tui-xach',
-    image: 'https://placehold.co/300x200?text=Tui+Xach',
-    parentId: 'cate-5'
-  },
-  {
-    id: 'cate-6-1',
-    name: 'Xe đẩy',
-    slug: 'xe-day',
-    image: 'https://placehold.co/300x200?text=Xe+Day',
-    parentId: 'cate-6'
-  },
-  {
-    id: 'cate-6-2',
-    name: 'Đồ chơi trẻ em',
-    slug: 'do-choi-tre-em',
-    image: 'https://placehold.co/300x200?text=Do+Choi',
-    parentId: 'cate-6'
-  },
-  {
-    id: 'cate-6-3',
-    name: 'Quần áo trẻ em',
-    slug: 'quan-ao-tre-em',
-    image: 'https://placehold.co/300x200?text=Quan+Ao+Tre+Em',
-    parentId: 'cate-6'
-  },
-  {
-    id: 'cate-8',
+    _id: 'cate-8',
     name: 'Đồ chơi',
-    slug: 'giai-tri-the-thao',
-    image: 'https://placehold.co/300x200?text=Giai+Tri',
-    parentId: null,
+    slug: 'do-choi',
+    description: '',
+    code: '600',
+    parentCode: null,
+    imageUrl: 'https://placehold.co/300x200?text=Giai+Tri',
     icon: Play,
-    color: 'text-indigo-500'
+    color: 'text-indigo-500',
+    createdAt: Date.now(),
+    updatedAt: null,
+    _destroy: false
   },
   {
-    id: 'cate-8-1',
-    name: 'Nhạc cụ',
-    slug: 'nhac-cu',
-    image: 'https://placehold.co/300x200?text=Nhac+Cu',
-    parentId: 'cate-8'
-  },
-  {
-    id: 'cate-8-2',
-    name: 'Thiết bị chơi game',
-    slug: 'game',
-    image: 'https://placehold.co/300x200?text=Game',
-    parentId: 'cate-8'
-  },
-  {
-    id: 'cate-8-3',
-    name: 'Dụng cụ thể thao',
-    slug: 'the-thao',
-    image: 'https://placehold.co/300x200?text=Sport',
-    parentId: 'cate-8'
-  },
-
-  {
-    id: 'cate-9',
+    _id: 'cate-9',
     name: 'Công cụ - Dụng cụ',
     slug: 'cong-cu-dung-cu',
-    image: 'https://placehold.co/300x200?text=Cong+Cu',
-    parentId: null,
+    description: '',
+    code: '700',
+    parentCode: null,
+    imageUrl: 'https://placehold.co/300x200?text=Cong+Cu',
     icon: Hammer,
-    color: 'text-gray-600'
+    color: 'text-gray-600',
+    createdAt: Date.now(),
+    updatedAt: null,
+    _destroy: false
   },
   {
-    id: 'cate-9-1',
-    name: 'Máy khoan',
-    slug: 'may-khoan',
-    image: 'https://placehold.co/300x200?text=May+Khoan',
-    parentId: 'cate-9'
-  },
-  {
-    id: 'cate-9-2',
-    name: 'Máy hàn',
-    slug: 'may-han',
-    image: 'https://placehold.co/300x200?text=May+Han',
-    parentId: 'cate-9'
-  },
-  {
-    id: 'cate-9-3',
-    name: 'Bộ dụng cụ',
-    slug: 'bo-dung-cu',
-    image: 'https://placehold.co/300x200?text=Dung+Cu',
-    parentId: 'cate-9'
-  },
-
-  {
-    id: 'cate-10',
+    _id: 'cate-10',
     name: 'Khác',
     slug: 'khac',
-    image: 'https://placehold.co/300x200?text=Khac',
-    parentId: null,
+    description: '',
+    code: '999',
+    parentCode: null,
+    imageUrl: 'https://placehold.co/300x200?text=Khac',
     icon: MoreHorizontal,
-    color: 'text-teal-500'
-  },
-  {
-    id: 'cate-10-1',
-    name: 'Đồ sưu tầm',
-    slug: 'do-suu-tam',
-    image: 'https://placehold.co/300x200?text=Suu+Tam',
-    parentId: 'cate-10'
-  },
-  {
-    id: 'cate-10-2',
-    name: 'Voucher',
-    slug: 'voucher',
-    image: 'https://placehold.co/300x200?text=Voucher',
-    parentId: 'cate-10'
-  },
-  {
-    id: 'cate-10-3',
-    name: 'Đồ handmade',
-    slug: 'do-handmade',
-    image: 'https://placehold.co/300x200?text=Handmade',
-    parentId: 'cate-10'
+    color: 'text-teal-500',
+    createdAt: Date.now(),
+    updatedAt: null,
+    _destroy: false
   }
 ]
 

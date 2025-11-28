@@ -199,7 +199,7 @@ import {
 const categoriesMock = [
   {
     id: 'cate-1',
-    name: 'Điện tử',
+    name: 'Điện Thoại - Laptop',
     slug: 'dien-tu',
     image: 'https://placehold.co/300x200?text=Dien+Tu',
     parentId: null,
@@ -386,16 +386,6 @@ const categoriesMock = [
     image: 'https://placehold.co/300x200?text=Tui+Xach',
     parentId: 'cate-5'
   },
-
-  {
-    id: 'cate-6',
-    name: 'Mẹ & Bé',
-    slug: 'me-va-be',
-    image: 'https://placehold.co/300x200?text=Me+Be',
-    parentId: null,
-    icon: Baby,
-    color: 'text-purple-500'
-  },
   {
     id: 'cate-6-1',
     name: 'Xe đẩy',
@@ -417,10 +407,9 @@ const categoriesMock = [
     image: 'https://placehold.co/300x200?text=Quan+Ao+Tre+Em',
     parentId: 'cate-6'
   },
-
   {
     id: 'cate-8',
-    name: 'Giải trí - Thể thao',
+    name: 'Đồ chơi',
     slug: 'giai-tri-the-thao',
     image: 'https://placehold.co/300x200?text=Giai+Tri',
     parentId: null,

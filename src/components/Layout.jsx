@@ -26,7 +26,7 @@ function Layout() {
       </div>
     )
   }
-  if (!accessToken) {
+  if (!accessToken && user) {
     return location.pathname != '/' && <Navigate to='/login' replace={true} />
   }
   return (

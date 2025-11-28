@@ -33,7 +33,7 @@ function App() {
         <Route path='/myposts' element={<MyPosts />} />
         <Route path='/product/:id' element={<ProductPage />} />
         <Route path='/messages' element={<ChatPage />} />
-        <Route path='/favorites' element={<FavouritesPage />}></Route>
+        <Route path='/favorites' element={<FavouritesPage />} />
       </Route>
 
       <Route path='/admin' element={<AdminLayout />}>

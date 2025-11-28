@@ -391,12 +391,12 @@ export default function PostNews() {
                         value={age}
                         onChange={(e) => setAge(e.target.value)}
                       >
-                        <option value=''>Chọn độ tuổi</option>
+                        {/* <option value=''>Chọn độ tuổi</option>
                         {Object.entries(ageMap).map(([key, value]) => (
                           <option key={key} value={key}>
                             {value}
                           </option>
-                        ))}
+                        ))} */}
                       </select>
                       {errors.age && (
                         <div className='label'>

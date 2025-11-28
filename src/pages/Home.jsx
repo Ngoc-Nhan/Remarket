@@ -50,7 +50,7 @@ function Home() {
         {/* <div className='absolute inset-0 bg-gradient-to-r from-hero-from/90 to-hero-to/90' /> */}
         <div className='container relative z-10 mx-auto  pt-[4rem] '>
           <h1 className='text-xl md:text-3xl lg:text-4xl font-bold text-center text-black mb-4'>
-            Cùng khám phá đồ tốt nhanh nào!
+            Khám phá và tìm kiếm thứ bạn cần
           </h1>
 
           {/* Thanh tìm kiếm và bộ lọc */}
